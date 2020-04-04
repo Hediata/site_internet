@@ -1,0 +1,54 @@
+/* Présentation */
+.presentation
+{
+    display: block;
+    width: 86%;
+    padding: 7%;
+
+    color: black;
+    font-family: Comfortaa, sans-serif;
+    font-weight: bolder;
+    font-size: 2em;
+    text-indent: 2em;
+}
+
+/* _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-. */
+/* Sections */
+.sections
+{
+    display: flex;
+    flex-direction: column;
+}
+.sections div
+{
+    padding: 5%;
+}
+.sections h3 a
+{
+    color: black;
+    text-decoration: underline transparent;
+    transition: all 0.5s ease;
+}
+.sections h3 a:hover
+{
+    text-decoration-color: black;
+}
+.sections p
+{
+    text-indent: 2em;
+}
+.military
+{
+    text-align: left;
+    background: linear-gradient(-90deg, darkblue, blue);
+}
+.rd
+{
+    text-align: right;
+    background: linear-gradient(90deg, lightgrey, white);
+}
+.industry
+{
+    text-align: left;
+    background: linear-gradient(-90deg, darkred, red);
+}

@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/home.css') }}">
+{% endblock %}
+
+{% block body %}
+    <!-- Texte de présentation -->
+    <div class="presentation">
+        <p>Texte de présentation</p>
+    </div>
+
+    <!-- Bibliothèque d'image -->
+    <div>
+
+    </div>
+
+    <!-- Présentation des sections -->
+    <div class="sections">
+        <div class="military">
+            <h3><a href="#">Military</a></h3>
+            <p>Présentation de la section Military</p>
+        </div>
+        <div class="rd">
+            <h3><a href="#">R&D</a></h3>
+            <p>Présentation de la section R&D</p>
+        </div>
+        <div class="industry">
+            <h3><a href="#">Industry</a></h3>
+            <p>Présentation de la section Industry</p>
+        </div>
+    </div>
+{% endblock %}
