@@ -6,89 +6,63 @@
     font-family: Comfortaa, sans-serif;
 }
 
+/* _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-. */
 /* HEADER */
 
 header
 {
-    width: 80%;
-    padding: 10%;
-    background: linear-gradient(50deg,
-    midnightblue,
-    blue);
-}
-header h1
-{
+    padding: 5em 5em 3em;
+    border-bottom: 5px solid black;
     text-align: center;
+    font-size: 3em;
 }
-header h1 a
+header a
 {
+    color: black;
     text-decoration: none;
-    color: white;
-    font-size: 5em;
-    font-family: Comfortaa, sans-serif;
 }
+
 nav
 {
+    background-color: white;
+    font-size: 1.3em;
+    width: 100%;
     position: fixed;
     left: 0;
     top: 0;
-    padding: 1%;
-    width: 98%;
     display: flex;
+    padding: 1em 0;
     justify-content: space-between;
-    background: linear-gradient(50deg,
-    red,
-    darkred);
-}
-nav div
-{
-    display: flex;
-    width: 50%;
-}
-nav .left
-{
-    justify-content: flex-start;
-}
-nav .right
-{
-    justify-content: flex-end;
+    border-bottom: 3px solid black;
 }
 nav a
 {
-    display: block;
-    font-family: Comfortaa, sans-serif;
-    color: white;
-    margin: 0 1%;
-    width: fit-content;
-    text-decoration: none;
-    font-size: 1.5em;
-    border-radius: 0.4em;
-    padding: 0.3%;
-    transition: all .5s ease;
-}
-nav .left a
-{
-    text-decoration: underline transparent;
-}
-nav .left a:hover
-{
-    text-decoration: underline white;
+    border-radius: 0.5em;
+    border: 2px solid transparent;
+    padding: 0.3em 2em;
+    color: black;
+    text-decoration-color: transparent;
 }
 nav .rejoindre
 {
-    border: 2px solid darkblue;
-}
-nav .rejoindre:hover
-{
-    border-color: blue;
+    border-color: black;
 }
 nav .connexion
 {
-    background-color: darkblue;
+    margin-right: 1em;
+    border-color: black;
+    color: white;
+    background-color: black;
 }
-nav .connexion:hover
+
+
+/* _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-. */
+/* MAIN */
+
+main
 {
-    background-color: blue;
+    width: 100%;
+    margin: 1em 0;
 }
 
 /* _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-. */
@@ -96,30 +70,21 @@ nav .connexion:hover
 
 footer
 {
+    border-top: 5px solid black;
     position: relative;
+    width: 100%;
     left: 0;
     bottom: 0;
-    width: 90%;
-    padding: 2% 5%;
-    margin-top: 5%;
-    background: linear-gradient(50deg,
-    blue,
-    white,
-    red);
     text-align: center;
+}
+footer p
+{
     color: black;
-    font-family: Comfortaa, sans-serif;
-    font-size: 1.2em;
+    padding: 1em 0;
 }
 footer a
 {
-    color: black;
+    color: inherit;
     font-weight: bolder;
     text-decoration: underline transparent;
-
-    transition: 1s ease;
-}
-footer a:hover
-{
-    text-decoration-color: black;
 }

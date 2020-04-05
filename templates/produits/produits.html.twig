@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" type="text/css" href="{{ asset('css/produits.css') }}">{% endblock %}
+
+{% block body %}
+    <!-- Navigation -->
+    <div class="boutons">
+        <h2 id="vaisseaux">Vaisseaux</h2>
+        <h2 id="programmes">Programmes</h2>
+    </div>
+
+    <!-- Onglets -->
+    <div class="onglets">
+        <div id="vaisseaux">
+            {% for vaisseau in vaisseaux %}
+                <div class="container" onclick="document.location.href='{{ path('app_show_vessel', {name: vaisseau["nom"]}) }}'">
+                    <img src="{{ asset(vaisseau['image']) }}" alt="image">
+                    <div class="infos">
+                        <h3>{{ vaisseau["nom"]|replace({'_': " "})|capitalize }}</h3>
+                        <p>Prix : {{ vaisseau['prix'] }} crédits</p>
+                        <p>{{ vaisseau['description'] }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+
+        <div id="programmes">
+            Formulaire
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        // Script pour les onglets
+        let boutons = document.querySelectorAll('.boutons > h2');
+        let onglets = document.querySelectorAll('.onglets > div');
+
+        for (let i = 0; i < boutons.length; i++) {
+            boutons[i].addEventListener('click', changeOnglet);
+        }
+        
+        function changeOnglet(event) {
+            setOnglet(event.target.id);
+        }
+
+        function setOnglet(id) {
+            if (onglets.length === boutons.length) {
+                for (let i = 0; i < onglets.length; i++) {
+                    if (onglets[i].id === id) {
+                        onglets[i].style.display = 'block';
+                    } else {
+                        onglets[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        setOnglet('vaisseaux');
+    </script>
+{% endblock %}

@@ -1,54 +1,53 @@
-/* Présentation */
-.presentation
+main > div
 {
-    display: block;
-    width: 86%;
-    padding: 7%;
-
-    color: black;
-    font-family: Comfortaa, sans-serif;
-    font-weight: bolder;
-    font-size: 2em;
-    text-indent: 2em;
+    margin: 1em 0;
 }
 
 /* _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-. */
-/* Sections */
+/* PRESENTATION */
+
+.presentation
+{
+    padding: 2em 3em;
+    font-size: 2em;
+    text-indent: 2em;
+
+    border-top: 2px solid dimgrey;
+    border-bottom: 2px solid dimgrey;
+}
+
+/* _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-. */
+/* SECTIONS */
+
 .sections
 {
-    display: flex;
-    flex-direction: column;
+    font-size: 1.2em;
+
+    border-top: 2px solid dimgrey;
+    border-bottom: 2px solid dimgrey;
 }
 .sections div
 {
-    padding: 5%;
+    padding: 2em 3em;
+    margin: 1em 0;
+
+    border-top: 1px solid dimgrey;
+    border-bottom: 1px solid dimgrey;
+}
+.left
+{
+    text-align: left;
+}
+.right
+{
+    text-align: right;
 }
 .sections h3 a
 {
     color: black;
-    text-decoration: underline transparent;
-    transition: all 0.5s ease;
-}
-.sections h3 a:hover
-{
-    text-decoration-color: black;
+    text-decoration: none;
 }
 .sections p
 {
     text-indent: 2em;
-}
-.military
-{
-    text-align: left;
-    background: linear-gradient(-90deg, darkblue, blue);
-}
-.rd
-{
-    text-align: right;
-    background: linear-gradient(90deg, lightgrey, white);
-}
-.industry
-{
-    text-align: left;
-    background: linear-gradient(-90deg, darkred, red);
 }
