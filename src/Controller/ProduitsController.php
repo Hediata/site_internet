@@ -5,12 +5,16 @@ namespace App\Controller;
 
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/produits")
+ */
 class ProduitsController extends AbstractController
 {
     /**
-     * @Route("/produits", name="app_produits")
+     * @Route("/", name="app_produits")
      */
     public function home()
     {
@@ -25,10 +29,11 @@ class ProduitsController extends AbstractController
     }
 
     /**
-     * @Route("/produits/vessel/{name}", name="app_show_vessel")
+     * @Route("/vessel/{name}", name="app_show_vessel")
      */
     public function showVessel($name)
     {
+
         return $this->render('produits/show_vessel.html.twig', [
             'name' => $name,
         ]);
