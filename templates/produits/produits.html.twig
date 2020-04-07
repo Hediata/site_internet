@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Produits{% endblock %}
+
 {% block stylesheets %}<link rel="stylesheet" type="text/css" href="{{ asset('css/produits.css') }}">{% endblock %}
 
 {% block body %}
@@ -9,16 +11,20 @@
         <h2 id="programmes">Programmes</h2>
     </div>
 
+    <!-- Recherche -->
+
+
     <!-- Onglets -->
     <div class="onglets">
         <div id="vaisseaux">
             {% for vaisseau in vaisseaux %}
-                <div class="container" onclick="document.location.href='{{ path('app_show_vessel', {name: vaisseau["nom"]}) }}'">
+                <div class="container" onclick="document.location.href='{{ path('app_show_vessel', {id: vaisseau["id"]}) }}'">
                     <img src="{{ asset(vaisseau['image']) }}" alt="image">
                     <div class="infos">
                         <h3>{{ vaisseau["nom"]|replace({'_': " "})|capitalize }}</h3>
                         <p>Prix : {{ vaisseau['prix'] }} crédits</p>
                         <p>{{ vaisseau['description'] }}</p>
+                        <p>{{ vaisseau['date_creation'] }}</p>
                     </div>
                 </div>
             {% endfor %}
@@ -32,8 +38,7 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script type="text/javascript">
-        // Script pour les onglets
+    <script type="text/javascript"> // Script pour les onglets
         let boutons = document.querySelectorAll('.boutons > h2');
         let onglets = document.querySelectorAll('.onglets > div');
 
@@ -58,5 +63,8 @@
         }
 
         setOnglet('vaisseaux');
+    </script>
+    <script type="text/javascript"> // Script pour la recherche
+
     </script>
 {% endblock %}
