@@ -1,0 +1,27 @@
+h2
+{
+    margin-top: 2em;
+    margin-left: 2em;
+}
+.sections
+{
+    margin: 2em 5em;
+    display: flex;
+    flex-direction: column;
+}
+.sections a
+{
+    color: black;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2em;
+}
+.sections div
+{
+    margin-left: 2em;
+}
+.sections p
+{
+    text-indent: 2em;
+}
