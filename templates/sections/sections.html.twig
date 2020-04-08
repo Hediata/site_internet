@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sections{% endblock %}
+
+{% block stylesheets %}<link rel="stylesheet" type="text/css" href="{{ asset('css/sections.css') }}">{% endblock %}
+
+{% block body %}
+    <h2>Les sections</h2>
+    <div class="sections">
+        {% for section in sections %}
+            <a href="{{ path('app_sections', {section:section['nom']}) }}">
+                <h3>{{ section['nom'] }}</h3>
+                <div>
+                    <p>{{ section['description'] }}</p>
+                    <span><strong>{{ section['nb_membre'] }}</strong> membres</span>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

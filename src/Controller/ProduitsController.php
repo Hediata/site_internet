@@ -5,7 +5,6 @@ namespace App\Controller;
 
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -16,7 +15,7 @@ class ProduitsController extends AbstractController
     /**
      * @Route("/", name="app_produits")
      */
-    public function home()
+    public function market()
     {
         $vaisseaux = [
             [
