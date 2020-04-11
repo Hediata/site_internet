@@ -4,6 +4,9 @@
 namespace App\Controller;
 
 
+use App\Entity\Produits;
+use App\Entity\Types;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -15,26 +18,12 @@ class ProduitsController extends AbstractController
     /**
      * @Route("/", name="app_produits")
      */
-    public function market()
+    public function market(EntityManagerInterface $em)
     {
-        $vaisseaux = [
-            [
-                'id' => 1,
-                'nom' => 'flotte_de_100_vaisseaux',
-                'prix' => 150450,
-                'description' => 'Il s\'agit d\'une flotte de 100 chasseurs bien armés, avec toutes leurs munitions.',
-                'image' => '/images/fond_header.jpg',
-                'date_creation' => '2020-02-25',
-            ],
-            [
-                'id' => 2,
-                'nom' => 'cuirassé_en_fin_de_vie',
-                'prix' => 300,
-                'description' => 'Ce cuirassé a déjà servi pour plusieurs batailles. Il a dû être rafistolé dans tous les sens, mais il tient bien. Malheureusement les munitions pour son armement ne sont plus produites car obsolètes.',
-                'image' => '/images/Hediata.png',
-                'date_creation' => '2020-02-25',
-            ],
-        ];
+        $repositoryT = $em->getRepository(Types::class);
+        $type = $repositoryT->findOneBy(['nom' => 'vaisseau']);
+        $repositoryP = $em->getRepository(Produits::class);
+        $vaisseaux = $repositoryP->findBy(['type' => $type->getId()]);
 
         return $this->render('produits/produits.html.twig', [
             'vaisseaux' => $vaisseaux,
@@ -44,16 +33,15 @@ class ProduitsController extends AbstractController
     /**
      * @Route("/vessel/{id}", name="app_show_vessel")
      */
-    public function showVessel($id)
+    public function showVessel($id, EntityManagerInterface $em)
     {
-        $vaisseau = [
-            'id' => $id,
-            'nom' => 'cuirassé_en_fin_de_vie',
-            'prix' => 300,
-            'description' => 'Ce cuirassé a déjà servi pour plusieurs batailles. Il a dû être rafistolé dans tous les sens, mais il tient bien. Malheureusement les munitions pour son armement ne sont plus produites car obsolètes.',
-            'image' => '/images/Hediata.png',
-            'date_creation' => '2020-02-25',
-        ];
+        $repositoryP = $em->getRepository(Produits::class);
+        $vaisseau = $repositoryP->find($id);
+
+        if (!$vaisseau)
+        {
+            throw $this->createNotFoundException(sprintf('No vessel found for id : %s', $id));
+        }
 
         return $this->render('produits/show_vessel.html.twig', [
             'vaisseau' => $vaisseau,
