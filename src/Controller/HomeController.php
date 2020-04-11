@@ -5,10 +5,18 @@ namespace App\Controller;
 
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
+    private $session;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+    }
+
     /**
      * @Route("/", name="app_homepage")
      */
@@ -22,6 +30,8 @@ class HomeController extends AbstractController
      */
     public function connexion()
     {
+        $this->session->set('connected', true);
+
         return $this->render('home/connexion.html.twig');
     }
 
@@ -36,15 +46,17 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/moi", name="app_user")
+     * @Route("/user/{moi}", name="app_user", defaults={"moi"=""})
      */
-    public function user()
+    public function user($moi)
     {
         $user = [
-            'login' => 'Gashmob',
+            'login' => $moi,
             'mdp' => 'password',
             'prenom' => 'firstName',
             'nom' => 'lastName',
+            'section' => 'Industry',
+            'grade' => 'Superviseur Général',
         ];
 
         return $this->render('home/user.html.twig', [
