@@ -8,11 +8,11 @@
     <h2>Les sections</h2>
     <div class="sections">
         {% for section in sections %}
-            <a href="{{ path('app_sections', {section:section['nom']}) }}">
-                <h3>{{ section['nom'] }}</h3>
+            <a href="{{ path('app_sections', {section:section.nom}) }}">
+                <h3>{{ section.nom }}</h3>
                 <div>
-                    <p>{{ section['description'] }}</p>
-                    <span><strong>{{ section['nb_membre'] }}</strong> membres</span>
+                    <p>{{ section.description }}</p>
+                    <span><strong>{{ section.nbMembre }}</strong> membres</span>
                 </div>
             </a>
         {% endfor %}

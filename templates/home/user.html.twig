@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ user['login'] }}{% endblock %}
+{% block title %}{{ user.login }}{% endblock %}
 
 {% block stylesheets %}<link rel="stylesheet" type="text/css" href="{{ asset('css/user.css') }}">{% endblock %}
 
@@ -14,13 +14,17 @@
         <div class="onglets">
             <div id="profil">
                 <div class="utilisateur">
-                    <h2>{{ user['login'] }}</h2>
+                    <h2>{{ user.login }}</h2>
                 </div>
 
                 <div class="resume">
                     <ul>
-                        <li><a href="{{ path('app_sections', {section:user['section']}) }}">{{ user['section'] }}</a></li>
-                        <li><em>{{ user['grade'] }}</em></li>
+                        {% if user.section %}
+                            <li><a href="{{ path('app_sections', {section:user.section}) }}">{{ user.section }}</a></li>
+                            <li><em>{{ user.grade }}</em></li>
+                        {% else %}
+                            <li>Dans aucune section</li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

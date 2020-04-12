@@ -16,13 +16,8 @@
                 <a href="{{ path('app_sections') }}">Sections</a>
             </div>
             <div class="right">
-                {% if app.session['connected'] is defined and app.session['connected'] == true %}
-                    <a href="{{ path('app_user') }}" class="rejoindre">Profil</a>
-                    <a href="#" class="connexion">Deconnexion</a>
-                {% else %}
-                    <a href="{{ path('app_rejoindre') }}" class="rejoindre">Rejoindre</a>
-                    <a href="{{ path('app_connexion') }}" class="connexion">Connexion</a>
-                {% endif %}
+                <a href="{{ path('app_rejoindre') }}" class="rejoindre">Rejoindre</a>
+                <a href="{{ path('app_connexion') }}" class="connexion">Connexion</a>
             </div>
         </nav>
         <header>

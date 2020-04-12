@@ -4,6 +4,8 @@
 namespace App\Controller;
 
 
+use App\Entity\Sections;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -15,50 +17,42 @@ class SectionsController extends AbstractController
     /**
      * @Route("/{section}", name="app_sections", defaults={"section"=""})
      */
-    public function show_section($section)
+    public function show_section($section, EntityManagerInterface $em)
     {
-        $sections = [
-            [
-                'nom' => 'R&D',
-                'nb_membre' => 3,
-                'description' => 'Description de la section'
-            ],
-            [
-                'nom' => 'Industry',
-                'nb_membre' => 4,
-                'description' => 'Description de la section'
-            ],
-            [
-                'nom' => 'Military',
-                'nb_membre' => 4,
-                'description' => 'Description de la section'
-            ],
-        ];
+        $repositoryS = $em->getRepository(Sections::class);
 
-        switch ($section)
+        if ($section === "")
         {
-            case 'R&D':
-                return $this->render('sections/rd.html.twig', [
-                    'section' => $sections[0],
-                ]);
-                break;
+            return $this->render('sections/sections.html.twig', [
+                'sections' => $repositoryS->findAll(),
+            ]);
+        }
+        else
+        {
+            $sec = $repositoryS->findOneBy(['nom' => $section]);
+            switch ($section)
+            {
+                case 'R&D':
+                    return $this->render('sections/rd.html.twig', [
+                       'section' => $sec,
+                    ]);
+                    break;
 
-            case 'Industry':
-                return $this->render('sections/industry.html.twig', [
-                    'section' => $sections[1],
-                ]);
-                break;
+                case 'Industry':
+                    return $this->render('sections/industry.html.twig', [
+                       'section' => $sec,
+                    ]);
+                    break;
 
-            case 'Military':
-                return $this->render('sections/military.html.twig', [
-                    'section' => $sections[2],
-                ]);
-                break;
+                case 'Military':
+                    return $this->render('sections/military.html.twig', [
+                        'section' => $sec,
+                    ]);
+                    break;
 
-            default:
-                return $this->render('sections/sections.html.twig', [
-                    'sections' => $sections,
-                ]);
+                default:
+                    throw $this->createNotFoundException(sprintf('No section found for name : %s', $section));
+            }
         }
     }
 }

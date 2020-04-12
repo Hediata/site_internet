@@ -4,25 +4,25 @@
 namespace App\Controller;
 
 
+use App\Entity\Sections;
+use App\Entity\Utilisateurs;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-    private $session;
-
-    public function __construct(SessionInterface $session)
-    {
-        $this->session = $session;
-    }
-
     /**
      * @Route("/", name="app_homepage")
      */
-    public function homepage()
+    public function homepage(EntityManagerInterface $em)
     {
-        return $this->render('home/home.html.twig');
+        $repositoryS = $em->getRepository(Sections::class);
+        $sections = $repositoryS->findAll();
+
+        return $this->render('home/home.html.twig', [
+            'sections' => $sections,
+        ]);
     }
 
     /**
@@ -30,8 +30,6 @@ class HomeController extends AbstractController
      */
     public function connexion()
     {
-        $this->session->set('connected', true);
-
         return $this->render('home/connexion.html.twig');
     }
 
@@ -46,18 +44,22 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/user/{moi}", name="app_user", defaults={"moi"=""})
+     * @Route("/user/{login}", name="app_user", defaults={"login"=""})
      */
-    public function user($moi)
+    public function user($login, EntityManagerInterface $em)
     {
-        $user = [
-            'login' => $moi,
-            'mdp' => 'password',
-            'prenom' => 'firstName',
-            'nom' => 'lastName',
-            'section' => 'Industry',
-            'grade' => 'Superviseur Général',
-        ];
+        $repositoryU = $em->getRepository(Utilisateurs::class);
+
+        if ($login === "")
+        {
+            $login = "gashmob";
+        }
+        $user = $repositoryU->findOneBy(['login' => $login]);
+
+        if (!$user)
+        {
+            throw $this->createNotFoundException(sprintf('No user found for login : %s', $login));
+        }
 
         return $this->render('home/user.html.twig', [
             'user' => $user,
