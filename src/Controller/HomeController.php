@@ -41,6 +41,11 @@ class HomeController extends AbstractController
      */
     public function connexion(EntityManagerInterface $em, Request $request)
     {
+        if ($this->session->get('user'))
+        {
+            return $this->redirectToRoute('app_user');
+        }
+
         $form = $this->createForm(ConnexionFormType::class);
 
         $form->handleRequest($request);
@@ -57,7 +62,7 @@ class HomeController extends AbstractController
             {
                 $this->session->set('user', $user);
                 $this->addFlash('success', 'Vous êtes connecté(e) !');
-                return $this->redirectToRoute('app_user', ['login' => $user->getLogin()]);
+                return $this->redirectToRoute('app_user');
             }
         }
 
@@ -71,7 +76,10 @@ class HomeController extends AbstractController
      */
     public function deconnexion()
     {
-        $this->session->remove('user');
+        if ($this->session->get('user'))
+        {
+            $this->session->remove('user');
+        }
 
         return $this->redirectToRoute('app_homepage');
     }
@@ -81,6 +89,11 @@ class HomeController extends AbstractController
      */
     public function rejoindre(EntityManagerInterface $em, Request $request)
     {
+        if ($this->session->get('user'))
+        {
+            return $this->redirectToRoute('app_user');
+        }
+
         $form = $this->createForm(CandidatureFormType::class);
 
         $form->handleRequest($request);
@@ -121,6 +134,10 @@ class HomeController extends AbstractController
             if ($this->session->get('user'))
             {
                 $user = $this->session->get('user');
+            }
+            else
+            {
+                return $this->redirectToRoute('app_homepage');
             }
         }
         else
