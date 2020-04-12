@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Sections;
 use App\Entity\Utilisateurs;
+use App\Form\CandidatureFormType;
 use App\Form\ConnexionFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -76,12 +77,35 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/rejoindre/{section}", name="app_rejoindre", defaults={"section"="none"})
+     * @Route("/rejoindre/", name="app_rejoindre")
      */
-    public function rejoindre($section)
+    public function rejoindre(EntityManagerInterface $em, Request $request)
     {
+        $form = $this->createForm(CandidatureFormType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $candidature = $form->getData();
+
+            if ($candidature->getSection())
+            {
+                $repositoryS = $em->getRepository(Sections::class);
+                $section = $repositoryS->findOneBy([
+                    'nom' => $candidature->getSection()->getNom(),
+                ]);
+                $candidature->setSection($section);
+            }
+
+            $em->persist($candidature);
+            $em->flush();
+
+            $this->addFlash('success', 'Candidature envoyée');
+            return $this->redirectToRoute('app_homepage');
+        }
+
         return $this->render('home/rejoindre.html.twig', [
-            'section' => $section,
+            'form' => $form->createView(),
         ]);
     }
 
