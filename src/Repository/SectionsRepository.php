@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Sections;
+use App\Entity\Utilisateurs;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -24,6 +25,19 @@ class SectionsRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->where('s.nom = :nom')->setParameter('nom', $nom)
             ->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @param $nom : Le nom de la faction
+     * @return Utilisateurs[]
+     */
+    public function findAllMembers($nom)
+    {
+        $em = $this->getEntityManager();
+        return $em->getRepository(Utilisateurs::class)->createQueryBuilder('u')
+            ->leftJoin('u.section', 'section')->addSelect('section')
+            ->where('section.nom = :nom')->setParameter('nom', $nom)
+            ->getQuery()->getResult();
     }
 
     // /**

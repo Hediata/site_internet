@@ -39,6 +39,7 @@ class SectionsController extends AbstractController
                     return $this->render('sections/rd.html.twig', [
                         'section' => $sec,
                         'commandes' => $em->getRepository(Commandes::class)->findAllProgrammeSortByDate(),
+                        'membres' => $em->getRepository(Sections::class)->findAllMembers('R&D'),
                     ]);
                     break;
 
@@ -46,6 +47,7 @@ class SectionsController extends AbstractController
                     return $this->render('sections/industry.html.twig', [
                         'section' => $sec,
                         'commandes' => $em->getRepository(Commandes::class)->findAllVesselSortByDate(),
+                        'membres' => $em->getRepository(Sections::class)->findAllMembers('Industry'),
                     ]);
                     break;
 
@@ -53,6 +55,7 @@ class SectionsController extends AbstractController
                     return $this->render('sections/military.html.twig', [
                         'section' => $sec,
                         'commandes' => $em->getRepository(Commandes::class)->findAllMercenaireSortByDate(),
+                        'membres' => $em->getRepository(Sections::class)->findAllMembers('Military'),
                     ]);
                     break;
 
