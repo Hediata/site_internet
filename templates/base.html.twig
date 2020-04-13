@@ -17,8 +17,8 @@
             </div>
             <div class="right">
                 {% if app.session.get('user') %}
-                    <a href="{{ path('app_deconnexion') }}" class="rejoindre">Deconnexion</a>
-                    <a href="{{ path('app_user') }}" class="connexion">Profil</a>
+                    <a href="{{ path('app_user') }}" class="rejoindre">Profil</a>
+                    <a href="{{ path('app_deconnexion') }}" class="connexion">Deconnexion</a>
                 {% else %}
                     <a href="{{ path('app_rejoindre') }}" class="rejoindre">Rejoindre</a>
                     <a href="{{ path('app_connexion') }}" class="connexion">Connexion</a>

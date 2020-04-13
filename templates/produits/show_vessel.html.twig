@@ -11,4 +11,16 @@
         <img src="{{ asset(vaisseau.image) }}" alt="image">
         <p>{{ vaisseau.description }}</p>
     </div>
+    {% if app.session.get('user') %}
+        <div>
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <button type="submit">Ajouter au panier</button>
+            {{ form_end(form) }}
+        </div>
+    {% else %}
+        <div>
+            <p>Vous devez vous <a href="{{ path('app_connexion') }}">connecter</a> pour commander un produit</p>
+        </div>
+    {% endif %}
 {% endblock %}

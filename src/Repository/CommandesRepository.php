@@ -19,6 +19,44 @@ class CommandesRepository extends ServiceEntityRepository
         parent::__construct($registry, Commandes::class);
     }
 
+    /**
+     * @param $type : Le nom du type
+     * @return Commandes[] : La liste des commandes de type $type
+     */
+    private function findAllTypeSortByDate($type)
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.produit', 'produit')->addSelect('produit')
+            ->leftJoin('produit.type', 'type')->addSelect('type')
+            ->where('type.nom = :nom')->setParameter('nom', $type)
+            ->orderBy('c.date', 'ASC')
+            ->getQuery()->getResult();
+    }
+
+    /**
+     * @return Commandes[]
+     */
+    public function findAllVesselSortByDate()
+    {
+        return $this->findAllTypeSortByDate('vaisseau');
+    }
+
+    /**
+     * @return Commandes[]
+     */
+    public function findAllProgrammeSortByDate()
+    {
+        return $this->findAllTypeSortByDate('programme');
+    }
+
+    /**
+     * @return Commandes[]
+     */
+    public function findAllMercenaireSortByDate()
+    {
+        return $this->findAllTypeSortByDate('mercenaire');
+    }
+
     // /**
     //  * @return Commandes[] Returns an array of Commandes objects
     //  */

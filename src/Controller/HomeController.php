@@ -8,9 +8,12 @@ use App\Entity\Sections;
 use App\Entity\Utilisateurs;
 use App\Form\CandidatureFormType;
 use App\Form\ConnexionFormType;
+use App\Form\UtilisateurFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -25,11 +28,12 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/", name="app_homepage")
+     * @param EntityManagerInterface $em
+     * @return Response
      */
     public function homepage(EntityManagerInterface $em)
     {
-        $repositoryS = $em->getRepository(Sections::class);
-        $sections = $repositoryS->findAll();
+        $sections = $em->getRepository(Sections::class)->findAll();
 
         return $this->render('home/home.html.twig', [
             'sections' => $sections,
@@ -38,6 +42,9 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/connexion", name="app_connexion")
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
     public function connexion(EntityManagerInterface $em, Request $request)
     {
@@ -52,11 +59,7 @@ class HomeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid())
         {
             $data = $form->getData();
-            $repositoryU = $em->getRepository(Utilisateurs::class);
-            $user = $repositoryU->findOneBy([
-                'login' => $data->getLogin(),
-                'mot_de_passe' => $data->getMotDePasse(),
-            ]);
+            $user = $em->getRepository(Utilisateurs::class)->findOneByLoginAndPassword($data->getLogin(), $data->getMotDePasse());
 
             if ($user)
             {
@@ -78,7 +81,7 @@ class HomeController extends AbstractController
     {
         if ($this->session->get('user'))
         {
-            $this->session->remove('user');
+            $this->session->clear();
         }
 
         return $this->redirectToRoute('app_homepage');
@@ -86,6 +89,9 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/rejoindre/", name="app_rejoindre")
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
     public function rejoindre(EntityManagerInterface $em, Request $request)
     {
@@ -103,10 +109,7 @@ class HomeController extends AbstractController
 
             if ($candidature->getSection())
             {
-                $repositoryS = $em->getRepository(Sections::class);
-                $section = $repositoryS->findOneBy([
-                    'nom' => $candidature->getSection()->getNom(),
-                ]);
+                $section = $em->getRepository(Sections::class)->findOneByNom($candidature->getSection()->getNom());
                 $candidature->setSection($section);
             }
 
@@ -124,11 +127,12 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/user/{login}", name="app_user", defaults={"login"=""})
+     * @param $login
+     * @param EntityManagerInterface $em
+     * @return RedirectResponse|Response
      */
     public function user($login, EntityManagerInterface $em)
     {
-        $repositoryU = $em->getRepository(Utilisateurs::class);
-
         if ($login === "")
         {
             if ($this->session->get('user'))
@@ -142,7 +146,7 @@ class HomeController extends AbstractController
         }
         else
         {
-            $user = $repositoryU->findOneBy(['login' => $login]);
+            $user = $em->getRepository(Utilisateurs::class)->findOneByLogin($login);
         }
 
         if (!$user)

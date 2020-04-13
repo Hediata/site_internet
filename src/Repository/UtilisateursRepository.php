@@ -19,6 +19,25 @@ class UtilisateursRepository extends ServiceEntityRepository
         parent::__construct($registry, Utilisateurs::class);
     }
 
+    public function findOneByLogin($login): ?Utilisateurs
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.section', 'section')->addSelect('section')
+            ->leftJoin('u.grade', 'grade')->addSelect('grade')
+            ->where('u.login = :login')->setParameter('login', $login)
+            ->getQuery()->getOneOrNullResult();
+    }
+
+    public function findOneByLoginAndPassword($login, $password): ?Utilisateurs
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.section', 'section')->addSelect('section')
+            ->leftJoin('u.grade', 'grade')->addSelect('grade')
+            ->andWhere('u.login = :login')->setParameter('login', $login)
+            ->andWhere('u.mot_de_passe = :pwd')->setParameter('pwd', $password)
+            ->getQuery()->getOneOrNullResult();
+    }
+
     // /**
     //  * @return Utilisateurs[] Returns an array of Utilisateurs objects
     //  */

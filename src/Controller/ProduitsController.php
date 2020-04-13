@@ -5,9 +5,14 @@ namespace App\Controller;
 
 
 use App\Entity\Produits;
-use App\Entity\Types;
+use App\Entity\Utilisateurs;
+use App\Form\CommandeFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -15,15 +20,21 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProduitsController extends AbstractController
 {
+    private $session;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+    }
+
     /**
      * @Route("/", name="app_produits")
+     * @param EntityManagerInterface $em
+     * @return Response
      */
     public function market(EntityManagerInterface $em)
     {
-        $repositoryT = $em->getRepository(Types::class);
-        $type = $repositoryT->findOneBy(['nom' => 'vaisseau']);
-        $repositoryP = $em->getRepository(Produits::class);
-        $vaisseaux = $repositoryP->findBy(['type' => $type->getId()]);
+        $vaisseaux = $em->getRepository(Produits::class)->findByType('vaisseau');
 
         return $this->render('produits/produits.html.twig', [
             'vaisseaux' => $vaisseaux,
@@ -32,11 +43,36 @@ class ProduitsController extends AbstractController
 
     /**
      * @Route("/vessel/{id}", name="app_show_vessel")
+     * @param $id
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
-    public function showVessel($id, EntityManagerInterface $em)
+    public function showVessel($id, EntityManagerInterface $em, Request $request)
     {
         $repositoryP = $em->getRepository(Produits::class);
         $vaisseau = $repositoryP->find($id);
+
+        $form = $this->createForm(CommandeFormType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $commande = $form->getData();
+
+            if ($commande->getQuantite() > 0)
+            {
+                $commande->setProduit($vaisseau);
+                $commande->setUtilisateur($em->getRepository(Utilisateurs::class)->findOneByLogin($this->session->get('user')->getLogin()));
+
+                $em->persist($commande);
+                $em->flush();
+
+                $this->addFlash('success', sprintf('Vous en avez commandé %d', $commande->getQuantite()));
+
+                return $this->redirectToRoute('app_produits');
+            }
+        }
 
         if (!$vaisseau)
         {
@@ -45,6 +81,7 @@ class ProduitsController extends AbstractController
 
         return $this->render('produits/show_vessel.html.twig', [
             'vaisseau' => $vaisseau,
+            'form' => $form->createView(),
         ]);
     }
 }

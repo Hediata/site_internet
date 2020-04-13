@@ -8,7 +8,9 @@
     <div class="container">
         <div class="boutons">
             <span id="profil">Profil</span>
-            <span id="parametres">Paramètres</span>
+            {% if app.session.get('user') and user.login == app.session.get('user').login %}
+                <span id="parametres">Paramètres</span>
+            {% endif %}
         </div>
 
         <div class="onglets">
@@ -20,18 +22,19 @@
                 <div class="resume">
                     <ul>
                         {% if user.section %}
-                            <li><a href="{{ path('app_sections', {section:user.section}) }}">{{ user.section }}</a></li>
-                            <li><em>{{ user.grade }}</em></li>
+                            <li><a href="{{ path('app_sections', {section:user.section.nom}) }}">{{ user.section.nom }}</a></li>
+                            <li><em>{{ user.grade.nom }}</em></li>
                         {% else %}
                             <li>Dans aucune section</li>
                         {% endif %}
                     </ul>
                 </div>
             </div>
-
-            <div id="parametres">
-                Paramètres
-            </div>
+            {% if app.session.get('user') and user.login == app.session.get('user').login %}
+                <div id="parametres">
+                    paramètres
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

@@ -4,9 +4,11 @@
 namespace App\Controller;
 
 
+use App\Entity\Commandes;
 use App\Entity\Sections;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -16,37 +18,41 @@ class SectionsController extends AbstractController
 {
     /**
      * @Route("/{section}", name="app_sections", defaults={"section"=""})
+     * @param $section
+     * @param EntityManagerInterface $em
+     * @return Response
      */
     public function show_section($section, EntityManagerInterface $em)
     {
-        $repositoryS = $em->getRepository(Sections::class);
-
         if ($section === "")
         {
             return $this->render('sections/sections.html.twig', [
-                'sections' => $repositoryS->findAll(),
+                'sections' => $em->getRepository(Sections::class)->findAll(),
             ]);
         }
         else
         {
-            $sec = $repositoryS->findOneBy(['nom' => $section]);
+            $sec = $em->getRepository(Sections::class)->findOneByNom($section);
             switch ($section)
             {
                 case 'R&D':
                     return $this->render('sections/rd.html.twig', [
-                       'section' => $sec,
+                        'section' => $sec,
+                        'commandes' => $em->getRepository(Commandes::class)->findAllProgrammeSortByDate(),
                     ]);
                     break;
 
                 case 'Industry':
                     return $this->render('sections/industry.html.twig', [
-                       'section' => $sec,
+                        'section' => $sec,
+                        'commandes' => $em->getRepository(Commandes::class)->findAllVesselSortByDate(),
                     ]);
                     break;
 
                 case 'Military':
                     return $this->render('sections/military.html.twig', [
                         'section' => $sec,
+                        'commandes' => $em->getRepository(Commandes::class)->findAllMercenaireSortByDate(),
                     ]);
                     break;
 

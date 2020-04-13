@@ -4,7 +4,6 @@
 namespace App\Form;
 
 
-use App\Controller\SectionsController;
 use App\Entity\Candidature;
 use App\Entity\Sections;
 use Symfony\Component\Form\AbstractType;
@@ -37,11 +36,11 @@ class CandidatureFormType extends AbstractType
             ])
             ->add('section', ChoiceType::class, [
                'choices' => [
+                   'Aucune' => null,
                    'R&D' => $rd,
                    'Industry' => $industry,
                    'Military' => $military,
-                   'None' => null,
-               ]
+               ],
             ])
             ->add('motivation', TextareaType::class);
     }
