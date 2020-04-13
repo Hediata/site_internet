@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Entity\Grades;
 use App\Entity\Sections;
 use App\Entity\Utilisateurs;
 use App\Form\CandidatureFormType;
@@ -129,10 +130,41 @@ class HomeController extends AbstractController
      * @Route("/user/{login}", name="app_user", defaults={"login"=""})
      * @param $login
      * @param EntityManagerInterface $em
+     * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function user($login, EntityManagerInterface $em)
+    public function user($login, EntityManagerInterface $em, Request $request)
     {
+        $form = $this->createForm(UtilisateurFormType::class,
+            $em->getRepository(Utilisateurs::class)
+                ->findOneByLogin($this->session->get('user')->getLogin()));
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $user = $form->getData();
+            if ($user->getSection())
+            {
+                $user->setSection(
+                    $em->getRepository(Sections::class)
+                    ->findOneByNom(
+                        $user->getSection()->getNom()
+                    )
+                );
+                $user->setGrade(
+                    $em->getRepository(Grades::class)
+                    ->find(
+                        $user->getGrade()->getId()
+                    )
+                );
+            }
+
+            $em->persist($user);
+            $em->flush();
+
+            $this->addFlash('success', 'Vos données on été modifiée');
+            return $this->redirectToRoute('app_user');
+        }
+
         if ($login === "")
         {
             if ($this->session->get('user'))
@@ -156,6 +188,7 @@ class HomeController extends AbstractController
 
         return $this->render('home/user.html.twig', [
             'user' => $user,
+            'form' => $form->createView(),
         ]);
     }
 }
