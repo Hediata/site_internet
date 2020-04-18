@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Candidature;
+use App\Entity\Sections;
+use App\Entity\Utilisateurs;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,6 +19,66 @@ class CandidatureRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Candidature::class);
+    }
+
+    /**
+     * Renvoie toutes les candidatures non acceptées
+     *
+     * @return Candidature[]
+     */
+    public function findAllNonAccepted()
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.accepte = :accept')->setParameter('accept', false)
+            ->getQuery()->getResult();
+    }
+
+    /**
+     * Supprime une candidature
+     *
+     * @param $id
+     * @return int|mixed|string
+     */
+    public function reject($id)
+    {
+        return $this->createQueryBuilder('c')
+            ->delete()
+            ->where('c.id = :id')->setParameter('id', $id)
+            ->getQuery()->getResult();
+    }
+
+    /**
+     * Accepte la candidature, et ajoute l'utilisateur
+     *
+     * @param $id
+     * @return int|mixed|string
+     */
+    public function accept($id)
+    {
+        $candidature = $this->createQueryBuilder('c')
+            ->where('c.id = :id')->setParameter('id', $id)
+            ->getQuery()->getOneOrNullResult();
+        $em = $this->getEntityManager();
+        $user = new Utilisateurs();
+        $user->setLogin($candidature->getLogin())
+            ->setMotDePasse($candidature->getMotDePasse())
+            ->setPrenom($candidature->getPrenom())
+            ->setNom($candidature->getNom())
+            ->setSection($candidature->getSection());
+        if ($candidature->getSection())
+        {
+            $section = $em->getRepository(Sections::class)->findOneByNom($candidature->getSection()->getNom());
+            $user->setSection($section);
+        }
+        $em->persist($user);
+        $em->flush();
+
+        // On accepte la candidature
+        return $this->createQueryBuilder('c')
+            ->update()
+            ->set('c.accepte', true)
+            ->where('c.id = :id')->setParameter('id', $id)
+            ->getQuery()->getResult();
     }
 
     // /**

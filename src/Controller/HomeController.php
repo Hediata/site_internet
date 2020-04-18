@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Entity\Candidature;
 use App\Entity\Grades;
 use App\Entity\Sections;
 use App\Entity\Utilisateurs;

@@ -12,7 +12,13 @@
                 <h3>{{ section.nom }}</h3>
                 <div>
                     <p>{{ section.description }}</p>
-                    <span><strong>{{ section.nbMembre }}</strong> membres</span>
+                    <span><strong>{{ effectifs[section.nom] }}</strong>
+                        {% if effectifs[section.nom] > 1 %}
+                            membres
+                        {% else %}
+                            membre
+                        {% endif %}
+                    </span>
                 </div>
             </a>
         {% endfor %}

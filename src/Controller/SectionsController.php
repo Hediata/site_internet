@@ -26,8 +26,17 @@ class SectionsController extends AbstractController
     {
         if ($section === "")
         {
+            $sections = $em->getRepository(Sections::class)->findAll();
+            $effectifs = [];
+            foreach ($sections as $sec)
+            {
+                $effectifs[$sec->getNom()] = count($em->getRepository(Sections::class)
+                    ->findAllMembers($sec->getNom()));
+            }
+
             return $this->render('sections/sections.html.twig', [
-                'sections' => $em->getRepository(Sections::class)->findAll(),
+                'sections' => $sections,
+                'effectifs' => $effectifs,
             ]);
         }
         else

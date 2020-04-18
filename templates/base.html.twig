@@ -30,7 +30,12 @@
         </header>
 
         {% for message in app.flashes('success') %}
-            <div class="alert success">
+            <div class="alert-success" style="color: green;">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('fail') %}
+            <div class="alert-danger" style="color: red;">
                 {{ message }}
             </div>
         {% endfor %}

@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modération{% endblock %}
+
+{% block body %}
+    <!-- Navigation -->
+    <div class="boutons">
+        <h2 id="utilisateurs">Utilisateurs</h2>
+        <h2 id="sections">Sections</h2>
+        <h2 id="candidatures">Candidatures</h2>
+    </div>
+
+    <!-- Onglets -->
+    <div class="onglets">
+        <div id="utilisateurs">
+            {% if utilisateurs is empty %}
+                <p>Aucun utilisateur</p>
+            {% else %}
+                <table>
+                    <tr>
+                        <th>Login</th>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        <th>Section</th>
+                        <th>Grade</th>
+                    </tr>
+                    {% for utilisateur in utilisateurs %}
+                        <tr>
+                            <td>{{ utilisateur.login }}</td>
+                            <td>{{ utilisateur.prenom }}</td>
+                            <td>{{ utilisateur.nom }}</td>
+                            {% if utilisateur.section is defined %}
+                                <td>{{ utilisateur.section.nom }}</td>
+                                <td>{{ utilisateur.grade.nom }}</td>
+                            {% else %}
+                                <td>Aucune section</td>
+                                <td>Aucun grade</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </div>
+
+        <div id="sections">
+            <table>
+                <tr>
+                    <th>Nom</th>
+                    <th>Effectifs</th>
+                </tr>
+                {% for section in sections %}
+                    <tr>
+                        <td>{{ section.nom }}</td>
+                        <td>{{ effectifs[section.nom] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div id="candidatures">
+            {% if candidatures is empty %}
+                <p>Aucune candidature</p>
+            {% else %}
+                <table>
+                    <tr>
+                        <th>Login</th>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        <th>Section</th>
+                        <th>Motivation</th>
+                    </tr>
+                    {% for candidature in candidatures %}
+                        <tr>
+                            <td>{{ candidature.login }}</td>
+                            <td>{{ candidature.prenom }}</td>
+                            <td>{{ candidature.nom }}</td>
+                            <td>{{ candidature.section.nom }}</td>
+                            <td>{{ candidature.motivation }}</td>
+                            <td class="accept" id="{{ candidature.id }}"><a href="{{ path('app_candidature_accept', {id: candidature.id}) }}" style="color: green;">V</a></td>
+                            <td class="reject" id="{{ candidature.id }}"><a href="{{ path('app_candidature_reject', {id: candidature.id}) }}" style="color: red;">X</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="application/javascript">
+        let boutons = document.querySelectorAll('.boutons > h2');
+        let onglets = document.querySelectorAll('.onglets > div');
+
+        for (let i = 0; i < boutons.length; i++) {
+            boutons[i].addEventListener('click', changeOnglet);
+        }
+
+        function changeOnglet(event) {
+            setOnglet(event.target.id);
+        }
+
+        function setOnglet(id) {
+            if (onglets.length === boutons.length) {
+                for (let i = 0; i < onglets.length; i++) {
+                    if (onglets[i].id === id) {
+                        onglets[i].style.display = 'block';
+                    } else {
+                        onglets[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        setOnglet('{{ onglet }}');
+    </script>
+{% endblock %}
