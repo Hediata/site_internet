@@ -14,6 +14,11 @@
                 <a href="{{ path('app_homepage') }}">Accueil</a>
                 <a href="{{ path('app_produits') }}">Boutique</a>
                 <a href="{{ path('app_sections') }}">Sections</a>
+                {% if app.session.get('user') %}
+                    {% if app.session.get('user').login == "gashmob" %}
+                        <a href="{{ path('app_moderation') }}">Modération</a>
+                    {% endif %}
+                {% endif %}
             </div>
             <div class="right">
                 {% if app.session.get('user') %}
@@ -30,12 +35,12 @@
         </header>
 
         {% for message in app.flashes('success') %}
-            <div class="alert-success" style="color: green;">
+            <div class="alert alert-success" style="color: green;">
                 {{ message }}
             </div>
         {% endfor %}
         {% for message in app.flashes('fail') %}
-            <div class="alert-danger" style="color: red;">
+            <div class="alert alert-danger" style="color: red;">
                 {{ message }}
             </div>
         {% endfor %}

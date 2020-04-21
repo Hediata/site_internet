@@ -33,6 +33,11 @@ class Grades
      */
     private $section;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Grades")
+     */
+    private $precedent;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -70,6 +75,18 @@ class Grades
     public function setSection(?Sections $section): self
     {
         $this->section = $section;
+
+        return $this;
+    }
+
+    public function getPrecedent(): ?self
+    {
+        return $this->precedent;
+    }
+
+    public function setPrecedent(?self $precedent): self
+    {
+        $this->precedent = $precedent;
 
         return $this;
     }
