@@ -35,12 +35,12 @@ class CandidatureFormType extends AbstractType
                 'required' => false,
             ])
             ->add('section', ChoiceType::class, [
-               'choices' => [
-                   'Aucune' => null,
-                   'R&D' => $rd,
-                   'Industry' => $industry,
-                   'Military' => $military,
-               ],
+                'choices' => [
+                    'Aucune' => null,
+                    'R&D' => $rd,
+                    'Industry' => $industry,
+                    'Military' => $military,
+                ],
             ])
             ->add('motivation', TextareaType::class);
     }

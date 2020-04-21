@@ -2,7 +2,8 @@
 
 {% block title %}{{ user.login }}{% endblock %}
 
-{% block stylesheets %}<link rel="stylesheet" type="text/css" href="{{ asset('css/user.css') }}">{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/user.css') }}">{% endblock %}
 
 {% block body %}
     <div class="container">
@@ -22,7 +23,9 @@
                 <div class="resume">
                     <ul>
                         {% if user.section %}
-                            <li><a href="{{ path('app_sections', {section:user.section.nom}) }}">{{ user.section.nom }}</a></li>
+                            <li>
+                                <a href="{{ path('app_sections', {section:user.section.nom}) }}">{{ user.section.nom }}</a>
+                            </li>
                             <li><em>{{ user.grade.nom }}</em></li>
                         {% else %}
                             <li>Dans aucune section</li>

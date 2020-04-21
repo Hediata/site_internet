@@ -1,13 +1,11 @@
-main > div
-{
+main > div {
     margin: 1em 0;
 }
 
 /* _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-. */
 /* PRESENTATION */
 
-.presentation
-{
+.presentation {
     padding: 2em 3em;
     font-size: 2em;
     text-indent: 2em;
@@ -19,35 +17,34 @@ main > div
 /* _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-. */
 /* SECTIONS */
 
-.sections
-{
+.sections {
     font-size: 1.2em;
 
     border-top: 2px solid dimgrey;
     border-bottom: 2px solid dimgrey;
 }
-.sections div
-{
+
+.sections div {
     padding: 2em 3em;
     margin: 1em 0;
 
     border-top: 1px solid dimgrey;
     border-bottom: 1px solid dimgrey;
 }
-.left
-{
+
+.left {
     text-align: left;
 }
-.right
-{
+
+.right {
     text-align: right;
 }
-.sections h3 a
-{
+
+.sections h3 a {
     color: black;
     text-decoration: none;
 }
-.sections p
-{
+
+.sections p {
     text-indent: 2em;
 }

@@ -80,8 +80,7 @@ class CandidatureRepository extends ServiceEntityRepository
             ->setPrenom($candidature->getPrenom())
             ->setNom($candidature->getNom())
             ->setSection($candidature->getSection());
-        if ($candidature->getSection())
-        {
+        if ($candidature->getSection()) {
             $section = $em->getRepository(Sections::class)->findOneByNom($candidature->getSection()->getNom());
             $user->setSection($section);
         }

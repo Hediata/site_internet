@@ -20,6 +20,14 @@ class CommandesRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return Commandes[]
+     */
+    public function findAllVesselSortByDate()
+    {
+        return $this->findAllTypeSortByDate('vaisseau');
+    }
+
+    /**
      * @param $type : Le nom du type
      * @return Commandes[] : La liste des commandes de type $type
      */
@@ -31,14 +39,6 @@ class CommandesRepository extends ServiceEntityRepository
             ->where('type.nom = :nom')->setParameter('nom', $type)
             ->orderBy('c.date', 'ASC')
             ->getQuery()->getResult();
-    }
-
-    /**
-     * @return Commandes[]
-     */
-    public function findAllVesselSortByDate()
-    {
-        return $this->findAllTypeSortByDate('vaisseau');
     }
 
     /**

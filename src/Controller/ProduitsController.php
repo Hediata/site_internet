@@ -56,12 +56,10 @@ class ProduitsController extends AbstractController
         $form = $this->createForm(CommandeFormType::class);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $commande = $form->getData();
 
-            if ($commande->getQuantite() > 0)
-            {
+            if ($commande->getQuantite() > 0) {
                 $commande->setProduit($vaisseau);
                 $commande->setUtilisateur($em->getRepository(Utilisateurs::class)->findOneByLogin($this->session->get('user')->getLogin()));
 
@@ -74,8 +72,7 @@ class ProduitsController extends AbstractController
             }
         }
 
-        if (!$vaisseau)
-        {
+        if (!$vaisseau) {
             throw $this->createNotFoundException(sprintf('No vessel found for id : %s', $id));
         }
 

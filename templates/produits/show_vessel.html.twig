@@ -2,7 +2,8 @@
 
 {% block title %}{{ vaisseau.nom|replace({'_': " "})|capitalize }}{% endblock %}
 
-{% block stylesheets %}<link rel="stylesheet" type="text/css" href="{{ asset('css/show_vessel.css') }}">{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/show_vessel.css') }}">{% endblock %}
 
 {% block body %}
     <h2>Fiche produit : {{ vaisseau.nom|replace({'_': " "})|capitalize }}</h2>
@@ -14,8 +15,8 @@
     {% if app.session.get('user') %}
         <div>
             {{ form_start(form) }}
-                {{ form_widget(form) }}
-                <button type="submit">Ajouter au panier</button>
+            {{ form_widget(form) }}
+            <button type="submit">Ajouter au panier</button>
             {{ form_end(form) }}
         </div>
     {% else %}

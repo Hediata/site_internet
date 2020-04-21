@@ -4,7 +4,6 @@
 namespace App\Controller;
 
 
-use App\Entity\Candidature;
 use App\Entity\Grades;
 use App\Entity\Sections;
 use App\Entity\Utilisateurs;
@@ -50,21 +49,18 @@ class HomeController extends AbstractController
      */
     public function connexion(EntityManagerInterface $em, Request $request)
     {
-        if ($this->session->get('user'))
-        {
+        if ($this->session->get('user')) {
             return $this->redirectToRoute('app_user');
         }
 
         $form = $this->createForm(ConnexionFormType::class);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $user = $em->getRepository(Utilisateurs::class)->findOneByLoginAndPassword($data->getLogin(), $data->getMotDePasse());
 
-            if ($user)
-            {
+            if ($user) {
                 $this->session->set('user', $user);
                 $this->addFlash('success', 'Vous êtes connecté(e) !');
                 return $this->redirectToRoute('app_user');
@@ -81,8 +77,7 @@ class HomeController extends AbstractController
      */
     public function deconnexion()
     {
-        if ($this->session->get('user'))
-        {
+        if ($this->session->get('user')) {
             $this->session->clear();
         }
 
@@ -97,20 +92,17 @@ class HomeController extends AbstractController
      */
     public function rejoindre(EntityManagerInterface $em, Request $request)
     {
-        if ($this->session->get('user'))
-        {
+        if ($this->session->get('user')) {
             return $this->redirectToRoute('app_user');
         }
 
         $form = $this->createForm(CandidatureFormType::class);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $candidature = $form->getData();
 
-            if ($candidature->getSection())
-            {
+            if ($candidature->getSection()) {
                 $section = $em->getRepository(Sections::class)->findOneByNom($candidature->getSection()->getNom());
                 $candidature->setSection($section);
             }
@@ -140,22 +132,20 @@ class HomeController extends AbstractController
             $em->getRepository(Utilisateurs::class)
                 ->findOneByLogin($this->session->get('user')->getLogin()));
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
-            if ($user->getSection())
-            {
+            if ($user->getSection()) {
                 $user->setSection(
                     $em->getRepository(Sections::class)
-                    ->findOneByNom(
-                        $user->getSection()->getNom()
-                    )
+                        ->findOneByNom(
+                            $user->getSection()->getNom()
+                        )
                 );
                 $user->setGrade(
                     $em->getRepository(Grades::class)
-                    ->find(
-                        $user->getGrade()->getId()
-                    )
+                        ->find(
+                            $user->getGrade()->getId()
+                        )
                 );
             }
 
@@ -166,24 +156,17 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('app_user');
         }
 
-        if ($login === "")
-        {
-            if ($this->session->get('user'))
-            {
+        if ($login === "") {
+            if ($this->session->get('user')) {
                 $user = $this->session->get('user');
-            }
-            else
-            {
+            } else {
                 return $this->redirectToRoute('app_homepage');
             }
-        }
-        else
-        {
+        } else {
             $user = $em->getRepository(Utilisateurs::class)->findOneByLogin($login);
         }
 
-        if (!$user)
-        {
+        if (!$user) {
             throw $this->createNotFoundException(sprintf('No user found for login : %s', $login));
         }
 

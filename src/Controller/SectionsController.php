@@ -26,12 +26,10 @@ class SectionsController extends AbstractController
      */
     public function show_section($section, EntityManagerInterface $em)
     {
-        if ($section === "")
-        {
+        if ($section === "") {
             $sections = $em->getRepository(Sections::class)->findAll();
             $effectifs = [];
-            foreach ($sections as $sec)
-            {
+            foreach ($sections as $sec) {
                 $effectifs[$sec->getNom()] = count($em->getRepository(Sections::class)
                     ->findAllMembers($sec->getNom()));
             }
@@ -40,12 +38,9 @@ class SectionsController extends AbstractController
                 'sections' => $sections,
                 'effectifs' => $effectifs,
             ]);
-        }
-        else
-        {
+        } else {
             $sec = $em->getRepository(Sections::class)->findOneByNom($section);
-            switch ($section)
-            {
+            switch ($section) {
                 case 'R&D':
                     return $this->render('sections/rd.html.twig', [
                         'section' => $sec,

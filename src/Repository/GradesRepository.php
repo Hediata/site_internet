@@ -25,7 +25,8 @@ class GradesRepository extends ServiceEntityRepository
      * @param $nom : Le nom de la section
      * @return Grades[]
      */
-    public function findAllBySection($nom) {
+    public function findAllBySection($nom)
+    {
         return $this->createQueryBuilder('g')
             ->leftJoin('g.section', 'section')->addSelect('section')
             ->where('section.nom = :nom')->setParameter('nom', $nom)

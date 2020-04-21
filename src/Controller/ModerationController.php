@@ -9,9 +9,9 @@ use App\Entity\Sections;
 use App\Entity\Utilisateurs;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -118,8 +118,7 @@ class ModerationController extends AbstractController
      */
     public function modifyUser(Request $request, EntityManagerInterface $em)
     {
-        if ($request->isMethod('POST'))
-        {
+        if ($request->isMethod('POST')) {
             $login = $request->get('login');
             $prenom = $request->get('prenom');
             $nom = $request->get('nom');

@@ -1,8 +1,7 @@
 /* _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-. */
 /* BOUTONS */
 
-.boutons
-{
+.boutons {
     width: 100%;
     display: flex;
     justify-content: space-evenly;
@@ -11,8 +10,8 @@
     border-top: 3px solid dimgrey;
     border-bottom: 3px solid dimgrey;
 }
-.boutons h2
-{
+
+.boutons h2 {
     font-size: 2em;
     padding: 1em 2em;
     cursor: pointer;
@@ -21,28 +20,25 @@
 /* _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-. */
 /* TABLEAUX */
 
-.onglets > div
-{
+.onglets > div {
     margin-left: 5em;
     margin-right: 5em;
 }
 
-table
-{
+table {
     border: 1px solid black;
     width: 100%;
     font-size: 1.3em;
 }
-td
-{
+
+td {
     text-align: center;
 }
-table input,select,button
-{
+
+table input, select, button {
     font-size: 1em;
 }
 
-.onglets p
-{
+.onglets p {
     font-size: 2em;
 }

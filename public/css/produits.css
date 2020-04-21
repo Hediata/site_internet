@@ -1,8 +1,7 @@
 /* _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-. */
 /* BOUTONS */
 
-.boutons
-{
+.boutons {
     width: 100%;
     display: flex;
     justify-content: space-evenly;
@@ -11,8 +10,8 @@
     border-top: 3px solid dimgrey;
     border-bottom: 3px solid dimgrey;
 }
-.boutons h2
-{
+
+.boutons h2 {
     font-size: 2em;
     padding: 1em 2em;
     cursor: pointer;
@@ -21,8 +20,7 @@
 /* _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-. */
 /* VAISSEAUX */
 
-.onglets #vaisseaux
-{
+.onglets #vaisseaux {
     flex-direction: column;
     justify-content: space-evenly;
     padding: 3em 5em;
@@ -30,8 +28,8 @@
     border-top: 3px solid dimgrey;
     border-bottom: 3px solid dimgrey;
 }
-.onglets #vaisseaux .container
-{
+
+.onglets #vaisseaux .container {
     display: flex;
     flex-direction: row;
     border: 2px solid black;
@@ -39,23 +37,23 @@
     margin: 1em 0;
     cursor: pointer;
 }
-.onglets #vaisseaux img
-{
+
+.onglets #vaisseaux img {
     width: 20em;
 }
-.onglets #vaisseaux .infos
-{
+
+.onglets #vaisseaux .infos {
     margin-left: 1em;
     padding-left: 1em;
     border-left: 1px solid grey;
 }
-.onglets #vaisseaux .infos h3
-{
+
+.onglets #vaisseaux .infos h3 {
     font-size: 2em;
     margin-bottom: 0.5em;
 }
-.onglets #vaisseaux .infos p
-{
+
+.onglets #vaisseaux .infos p {
     font-size: 1.1em;
     text-indent: 1em;
 }
@@ -63,8 +61,7 @@
 /* _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-. */
 /* PROGRAMMES */
 
-.onglets #programmes
-{
+.onglets #programmes {
     padding: 3em 5em;
 
     border-top: 3px solid dimgrey;
