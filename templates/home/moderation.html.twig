@@ -2,6 +2,8 @@
 
 {% block title %}Modération{% endblock %}
 
+{% block stylesheets %}<link rel="stylesheet" type="text/css" href="{{ asset('css/moderation.css') }}">{% endblock %}
+
 {% block body %}
     <!-- Navigation -->
     <div class="boutons">
@@ -26,16 +28,55 @@
                     </tr>
                     {% for utilisateur in utilisateurs %}
                         <tr>
-                            <td>{{ utilisateur.login }}</td>
-                            <td>{{ utilisateur.prenom }}</td>
-                            <td>{{ utilisateur.nom }}</td>
-                            {% if utilisateur.section is defined %}
-                                <td>{{ utilisateur.section.nom }}</td>
-                                <td>{{ utilisateur.grade.nom }}</td>
-                            {% else %}
-                                <td>Aucune section</td>
-                                <td>Aucun grade</td>
-                            {% endif %}
+                            <form action="{{ path('app_modify_user') }}" method="post">
+                                <td><input type="text" name="login" value="{{ utilisateur.login }}" readonly></td>
+                                <td><input type="text" name="prenom" value="{{ utilisateur.prenom }}"></td>
+                                <td><input type="text" name="nom" value="{{ utilisateur.nom }}"></td>
+                                {% if utilisateur.section is defined %}
+                                    <td>
+                                        <select name="section" class="selectSection" id="{{ utilisateur.login }}">
+                                            {% for section in sections %}
+                                                {% if section.nom == utilisateur.section.nom %}
+                                                    <option value="{{ section.nom }}"
+                                                            selected>{{ section.nom }}</option>
+                                                {% else %}
+                                                    <option value="{{ section.nom }}">{{ section.nom }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <option value="aucune">Aucune</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select name="grade" class="selectGrade" id="{{ utilisateur.login }}">
+                                            {% for grade in grades %}
+                                                {% if grade.id == utilisateur.grade.id %}
+                                                    <option value="{{ grade.id }}" id="{{ grade.section.nom }}"
+                                                            selected>
+                                                        {% if grade.precedent != null %}
+                                                            ({{ grade.precedent.nom }})
+                                                        {% endif %}
+                                                        {{ grade.nom }}
+                                                    </option>
+                                                {% else %}
+                                                    <option value="{{ grade.id }}"
+                                                            id="{{ grade.section.nom }}">
+                                                        {% if grade.precedent != null %}
+                                                            ({{ grade.precedent.nom }})
+                                                        {% endif %}
+                                                        {{ grade.nom }}
+                                                    </option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                {% else %}
+                                    <td>Aucune section</td>
+                                    <td>Aucun grade</td>
+                                {% endif %}
+                                <td>
+                                    <button type="submit" style="color: green;">V</button>
+                                </td>
+                            </form>
                         </tr>
                     {% endfor %}
                 </table>
@@ -50,7 +91,7 @@
                 </tr>
                 {% for section in sections %}
                     <tr>
-                        <td>{{ section.nom }}</td>
+                        <td><a href="{{ path('app_sections', {section:section.nom}) }}">{{ section.nom }}</a></td>
                         <td>{{ effectifs[section.nom] }}</td>
                     </tr>
                 {% endfor %}
@@ -76,8 +117,12 @@
                             <td>{{ candidature.nom }}</td>
                             <td>{{ candidature.section.nom }}</td>
                             <td>{{ candidature.motivation }}</td>
-                            <td class="accept" id="{{ candidature.id }}"><a href="{{ path('app_candidature_accept', {id: candidature.id}) }}" style="color: green;">V</a></td>
-                            <td class="reject" id="{{ candidature.id }}"><a href="{{ path('app_candidature_reject', {id: candidature.id}) }}" style="color: red;">X</a></td>
+                            <td class="accept" id="{{ candidature.id }}"><a
+                                        href="{{ path('app_candidature_accept', {id: candidature.id}) }}"
+                                        style="color: green;">V</a></td>
+                            <td class="reject" id="{{ candidature.id }}"><a
+                                        href="{{ path('app_candidature_reject', {id: candidature.id}) }}"
+                                        style="color: red;">X</a></td>
                         </tr>
                     {% endfor %}
                 </table>
@@ -87,7 +132,41 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script type="application/javascript">
+    <script type="text/javascript">
+        let selectSection = document.querySelectorAll('.selectSection');
+        let sections = document.querySelectorAll('.selectSection > option');
+
+        for (let i = 0; i < selectSection.length; i++) {
+            selectSection[i].addEventListener('click', select);
+            sortGrade(selectSection[i].id);
+        }
+
+        function select(event) {
+            sortGrade(event.target.id)
+        }
+
+        function sortGrade(id) {
+            // Récupération section sélectionnée
+            let sectionsOption = document.querySelectorAll('#' + id + '.selectSection > option');
+            let section = "";
+            for (let i = 0; i < sectionsOption.length; i++) {
+                if (sectionsOption[i].selected) {
+                    section = sectionsOption[i].value;
+                }
+            }
+
+            // Filtrage des grades
+            let gradesOption = document.querySelectorAll('#' + id + '.selectGrade > option');
+            for (let i = 0; i < gradesOption.length; i++) {
+                if (gradesOption[i].id === section) {
+                    gradesOption[i].style.display = 'block';
+                } else {
+                    gradesOption[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+    <script type="text/javascript">
         let boutons = document.querySelectorAll('.boutons > h2');
         let onglets = document.querySelectorAll('.onglets > div');
 

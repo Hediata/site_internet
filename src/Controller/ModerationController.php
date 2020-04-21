@@ -8,6 +8,8 @@ use App\Entity\Grades;
 use App\Entity\Sections;
 use App\Entity\Utilisateurs;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,16 +37,13 @@ class ModerationController extends AbstractController
     public function moderation($onglet, EntityManagerInterface $em)
     {
         $user = $this->session->get('user');
-        if ($user)
-        {
-            if ($user->getLogin() === "gashmob")
-            {
+        if ($user) {
+            if ($user->getLogin() === "gashmob") {
                 $utilisateurs = $em->getRepository(Utilisateurs::class)->findAll();
                 $sections = $em->getRepository(Sections::class)->findAll();
                 $candidatures = $em->getRepository(Candidature::class)->findAllNonAccepted();
                 $effectifs = [];
-                foreach ($sections as $section)
-                {
+                foreach ($sections as $section) {
                     $effectifs[$section->getNom()] = count($em->getRepository(Sections::class)
                         ->findAllMembers($section->getNom()));
                 }
@@ -58,14 +57,10 @@ class ModerationController extends AbstractController
                     'onglet' => $onglet,
                     'grades' => $grades,
                 ]);
-            }
-            else
-            {
+            } else {
                 return $this->redirectToRoute('app_homepage');
             }
-        }
-        else
-        {
+        } else {
             return $this->redirectToRoute('app_homepage');
         }
     }
@@ -79,16 +74,11 @@ class ModerationController extends AbstractController
     public function acceptCandidature($id, EntityManagerInterface $em)
     {
         $user = $this->session->get('user');
-        if ($user)
-        {
-            if ($user->getLogin() === "gashmob")
-            {
-                if ($em->getRepository(Candidature::class)->accept($id))
-                {
+        if ($user) {
+            if ($user->getLogin() === "gashmob") {
+                if ($em->getRepository(Candidature::class)->accept($id)) {
                     $this->addFlash('success', 'La candidature a été acceptée, l\'utilisateur a été créé');
-                }
-                else
-                {
+                } else {
                     $this->addFlash('fail', 'La candidature n\'a pas pu être acceptée');
                 }
             }
@@ -106,21 +96,47 @@ class ModerationController extends AbstractController
     public function rejectCandidature($id, EntityManagerInterface $em)
     {
         $user = $this->session->get('user');
-        if ($user)
-        {
-            if ($user->getLogin() === "gashmob")
-            {
-                if ($em->getRepository(Candidature::class)->reject($id))
-                {
+        if ($user) {
+            if ($user->getLogin() === "gashmob") {
+                if ($em->getRepository(Candidature::class)->reject($id)) {
                     $this->addFlash('success', 'La candidature a été supprimée');
-                }
-                else
-                {
+                } else {
                     $this->addFlash('fail', 'La candidature n\'a pas pu être supprimée');
                 }
             }
         }
 
         return $this->redirectToRoute('app_moderation', ['onglet' => 'candidatures']);
+    }
+
+    /**
+     * @Route("/modify/user", name="app_modify_user")
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return RedirectResponse
+     * @throws NonUniqueResultException
+     */
+    public function modifyUser(Request $request, EntityManagerInterface $em)
+    {
+        if ($request->isMethod('POST'))
+        {
+            $login = $request->get('login');
+            $prenom = $request->get('prenom');
+            $nom = $request->get('nom');
+            $section = $em->getRepository(Sections::class)->findOneByNom($request->get('section'));
+            $grade = $em->getRepository(Grades::class)->find($request->get('grade'));
+
+            $user = $em->getRepository(Utilisateurs::class)->findOneByLogin($login);
+            $user->setLogin($login)
+                ->setPrenom($prenom)
+                ->setNom($nom)
+                ->setSection($section)
+                ->setGrade($grade);
+
+            $em->persist($user);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('app_moderation', ['onglet' => 'utilisateurs']);
     }
 }

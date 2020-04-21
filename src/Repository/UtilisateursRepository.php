@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Utilisateurs;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,6 +20,13 @@ class UtilisateursRepository extends ServiceEntityRepository
         parent::__construct($registry, Utilisateurs::class);
     }
 
+    /**
+     * Renvoie l'utilisateur en fonction de son login
+     *
+     * @param $login
+     * @return Utilisateurs|null
+     * @throws NonUniqueResultException
+     */
     public function findOneByLogin($login): ?Utilisateurs
     {
         return $this->createQueryBuilder('u')
@@ -28,6 +36,14 @@ class UtilisateursRepository extends ServiceEntityRepository
             ->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * Renvoie l'utilisateur en fonction de son login et mot de passe
+     *
+     * @param $login
+     * @param $password
+     * @return Utilisateurs|null
+     * @throws NonUniqueResultException
+     */
     public function findOneByLoginAndPassword($login, $password): ?Utilisateurs
     {
         return $this->createQueryBuilder('u')
