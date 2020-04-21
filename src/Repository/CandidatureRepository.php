@@ -34,6 +34,21 @@ class CandidatureRepository extends ServiceEntityRepository
     }
 
     /**
+     * Renvoie toutes les candidature non acceptées ou le candidat demande à être dans une section
+     *
+     * @param $nom L'id de la section
+     * @return Candidature[]
+     */
+    public function findAllNonAcceptedBySection($nom)
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.section', 'section')->addSelect('section')
+            ->andWhere('c.accepte = :accept')->setParameter('accept', false)
+            ->andWhere('section.nom = :nom')->setParameter('nom', $nom)
+            ->getQuery()->getResult();
+    }
+
+    /**
      * Supprime une candidature
      *
      * @param $id

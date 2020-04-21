@@ -4,7 +4,9 @@
 namespace App\Controller;
 
 
+use App\Entity\Candidature;
 use App\Entity\Commandes;
+use App\Entity\Grades;
 use App\Entity\Sections;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -49,6 +51,8 @@ class SectionsController extends AbstractController
                         'section' => $sec,
                         'commandes' => $em->getRepository(Commandes::class)->findAllProgrammeSortByDate(),
                         'membres' => $em->getRepository(Sections::class)->findAllMembers('R&D'),
+                        'candidatures' => $em->getRepository(Candidature::class)->findAllNonAcceptedBySection('R&D'),
+                        'grades' => $em->getRepository(Grades::class)->findAllBySection('R&D'),
                     ]);
                     break;
 
@@ -57,6 +61,8 @@ class SectionsController extends AbstractController
                         'section' => $sec,
                         'commandes' => $em->getRepository(Commandes::class)->findAllVesselSortByDate(),
                         'membres' => $em->getRepository(Sections::class)->findAllMembers('Industry'),
+                        'candidatures' => $em->getRepository(Candidature::class)->findAllNonAcceptedBySection('Industry'),
+                        'grades' => $em->getRepository(Grades::class)->findAllBySection('Industry'),
                     ]);
                     break;
 
@@ -65,6 +71,8 @@ class SectionsController extends AbstractController
                         'section' => $sec,
                         'commandes' => $em->getRepository(Commandes::class)->findAllMercenaireSortByDate(),
                         'membres' => $em->getRepository(Sections::class)->findAllMembers('Military'),
+                        'candidatures' => $em->getRepository(Candidature::class)->findAllNonAcceptedBySection('Military'),
+                        'grades' => $em->getRepository(Grades::class)->findAllBySection('Military'),
                     ]);
                     break;
 
