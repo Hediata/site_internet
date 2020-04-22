@@ -71,12 +71,12 @@ class ModerationController extends AbstractController
      * @param EntityManagerInterface $em
      * @return RedirectResponse
      */
-    public function acceptCandidature($id, EntityManagerInterface $em)
+    public function acceptCandidature($id, EntityManagerInterface $em, Request $request)
     {
         $user = $this->session->get('user');
         if ($user) {
-            if ($user->getLogin() === "gashmob") {
-                if ($em->getRepository(Candidature::class)->accept($id)) {
+            if ($user->getLogin() === "gashmob" && $request->isMethod('POST')) {
+                if ($em->getRepository(Candidature::class)->accept($id, $request->get('grade'))) {
                     $this->addFlash('success', 'La candidature a été acceptée, l\'utilisateur a été créé');
                 } else {
                     $this->addFlash('fail', 'La candidature n\'a pas pu être acceptée');

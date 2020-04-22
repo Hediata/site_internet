@@ -3,9 +3,13 @@
 namespace App\Repository;
 
 use App\Entity\Candidature;
+use App\Entity\Grades;
 use App\Entity\Sections;
 use App\Entity\Utilisateurs;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -65,10 +69,14 @@ class CandidatureRepository extends ServiceEntityRepository
     /**
      * Accepte la candidature, et ajoute l'utilisateur
      *
-     * @param $id
+     * @param $id : L'id de la candidature
+     * @param $idGrade : Le grade auquel on affecte l'utilisateur
      * @return int|mixed|string
+     * @throws NonUniqueResultException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
-    public function accept($id)
+    public function accept($id, $idGrade)
     {
         $candidature = $this->createQueryBuilder('c')
             ->where('c.id = :id')->setParameter('id', $id)
@@ -80,6 +88,9 @@ class CandidatureRepository extends ServiceEntityRepository
             ->setPrenom($candidature->getPrenom())
             ->setNom($candidature->getNom())
             ->setSection($candidature->getSection());
+        if ($idGrade != null) {
+            $user->setGrade($em->getRepository(Grades::class)->find($id));
+        }
         if ($candidature->getSection()) {
             $section = $em->getRepository(Sections::class)->findOneByNom($candidature->getSection()->getNom());
             $user->setSection($section);
