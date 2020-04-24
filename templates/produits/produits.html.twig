@@ -28,7 +28,7 @@
             {% endfor %}
         </div>
         {% if nbVaisseaux > 10 %}
-            <div>
+            <div> <!-- Pagination -->
                 {% if page > 1 %}
                     <a href="{{ path('app_produits', {page: page-1}) }}">&leftarrow;</a>
                 {% endif %}
