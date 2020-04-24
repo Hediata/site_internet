@@ -54,6 +54,13 @@ class UtilisateursRepository extends ServiceEntityRepository
             ->getQuery()->getOneOrNullResult();
     }
 
+    public function countMembers()
+    {
+        return count($this->createQueryBuilder('u')
+            ->where('u.section IS NOT NULL')
+            ->getQuery()->getResult());
+    }
+
     // /**
     //  * @return Utilisateurs[] Returns an array of Utilisateurs objects
     //  */

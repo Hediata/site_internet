@@ -34,10 +34,9 @@ class HomeController extends AbstractController
      */
     public function homepage(EntityManagerInterface $em)
     {
-        $sections = $em->getRepository(Sections::class)->findAll();
-
         return $this->render('home/home.html.twig', [
-            'sections' => $sections,
+            'sections' => $em->getRepository(Sections::class)->findAll(),
+            'nbMember' => $em->getRepository(Utilisateurs::class)->countMembers(),
         ]);
     }
 
