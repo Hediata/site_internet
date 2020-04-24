@@ -15,7 +15,7 @@
         <a href="{{ path('app_produits') }}">Boutique</a>
         <a href="{{ path('app_sections') }}">Sections</a>
         {% if app.session.get('user') %}
-            {% if app.session.get('user').login == "gashmob" %}
+            {% if app.session.get('user').login in ['gashmob', 'ika', 'cookie'] %}
                 <a href="{{ path('app_moderation') }}">Modération</a>
             {% endif %}
         {% endif %}

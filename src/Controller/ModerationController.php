@@ -25,10 +25,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class ModerationController extends AbstractController
 {
     private $session;
+    private $whiteList;
 
     public function __construct(SessionInterface $session)
     {
         $this->session = $session;
+        $this->whiteList = [
+            'gashmob', 'cookie', 'ika', 'mitchalex27'
+        ];
     }
 
     /**
@@ -41,7 +45,7 @@ class ModerationController extends AbstractController
     {
         $user = $this->session->get('user');
         if ($user) {
-            if ($user->getLogin() === "gashmob") {
+            if (in_array($user->getLogin(), $this->whiteList)) {
                 $utilisateurs = $em->getRepository(Utilisateurs::class)->findAll();
                 $sections = $em->getRepository(Sections::class)->findAll();
                 $candidatures = $em->getRepository(Candidature::class)->findAllNonAccepted();
@@ -83,7 +87,7 @@ class ModerationController extends AbstractController
     {
         $user = $this->session->get('user');
         if ($user) {
-            if ($user->getLogin() === "gashmob" && $request->isMethod('POST')) {
+            if (in_array($user->getLogin(), $this->whiteList) && $request->isMethod('POST')) {
                 if ($em->getRepository(Candidature::class)->accept($id, $request->get('grade'))) {
                     $this->addFlash('success', 'La candidature a été acceptée, l\'utilisateur a été créé');
                 } else {
@@ -105,7 +109,7 @@ class ModerationController extends AbstractController
     {
         $user = $this->session->get('user');
         if ($user) {
-            if ($user->getLogin() === 'gashmob') {
+            if (in_array($user->getLogin(), $this->whiteList)) {
                 if ($em->getRepository(Candidature::class)->reject($id)) {
                     $this->addFlash('success', 'La candidature a été supprimée');
                 } else {
@@ -157,7 +161,7 @@ class ModerationController extends AbstractController
     {
         $user = $this->session->get('user');
         if ($user) {
-            if ($user->getLogin() === 'gashmob') {
+            if (in_array($user->getLogin(), $this->whiteList)) {
                 if ($em->getRepository(Commandes::class)->delete($id)) {
                     $this->addFlash('success', 'La commande a été supprimée');
                 } else {
@@ -208,7 +212,7 @@ class ModerationController extends AbstractController
     {
         $user = $this->session->get('user');
         if ($user) {
-            if ($user->getLogin() === 'gashmob') {
+            if (in_array($user->getLogin(), $this->whiteList)) {
                 $em->getRepository(Produits::class)->delete($id);
             }
         }
