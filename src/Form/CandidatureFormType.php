@@ -36,7 +36,7 @@ class CandidatureFormType extends AbstractType
             ])
             ->add('section', ChoiceType::class, [
                 'choices' => [
-                    'Aucune' => null,
+                    'Visiteur/Autre faction' => null,
                     'R&D' => $rd,
                     'Industry' => $industry,
                     'Military' => $military,
