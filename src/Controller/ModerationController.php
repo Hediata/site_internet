@@ -51,6 +51,8 @@ class ModerationController extends AbstractController
 
                 return $this->render('home/moderation.html.twig', [
                     'utilisateurs' => $utilisateurs,
+                    'nbMembre' => $em->getRepository(Utilisateurs::class)->countMembers(),
+                    'nbVisiteur' => $em->getRepository(Utilisateurs::class)->countVisitor(),
                     'sections' => $sections,
                     'effectifs' => $effectifs,
                     'candidatures' => $candidatures,

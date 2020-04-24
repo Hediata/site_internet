@@ -16,9 +16,8 @@
     <!-- Onglets -->
     <div class="onglets">
         <div id="utilisateurs">
-            {% if utilisateurs is empty %}
-                <p>Aucun utilisateur</p>
-            {% else %}
+            <p><strong>{{ nbMembre }}</strong> membres et <strong>{{ nbVisiteur }}</strong> visiteurs</p>
+            {% if utilisateurs is not empty %}
                 <table>
                     <tr>
                         <th>Login</th>

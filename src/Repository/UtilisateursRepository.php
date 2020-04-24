@@ -54,10 +54,27 @@ class UtilisateursRepository extends ServiceEntityRepository
             ->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * Compte le nombre de membres de la faction
+     *
+     * @return int
+     */
     public function countMembers()
     {
         return count($this->createQueryBuilder('u')
             ->where('u.section IS NOT NULL')
+            ->getQuery()->getResult());
+    }
+
+    /**
+     * Compte le nombre de visiteurs
+     *
+     * @return int
+     */
+    public function countVisitor()
+    {
+        return count($this->createQueryBuilder('u')
+            ->where('u.section IS NULL')
             ->getQuery()->getResult());
     }
 
