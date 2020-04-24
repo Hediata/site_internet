@@ -20,6 +20,20 @@ class ProduitsRepository extends ServiceEntityRepository
     }
 
     /**
+     * Renvoie le nombre de produits selon leurs type
+     *
+     * @param $type : Le type de produit
+     * @return int
+     */
+    public function countByType($type)
+    {
+        return count($this->findByType($type));
+    }
+
+    /**
+     * Renvoie la liste des produits selon leurs type
+     *
+     * @param $type : Le type de produit
      * @return Produits[]
      */
     public function findByType($type)
@@ -27,6 +41,23 @@ class ProduitsRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->leftJoin('p.type', 'type')->addSelect('type')
             ->where('type.nom = :t')->setParameter('t', $type)
+            ->getQuery()->getResult();
+    }
+
+    /**
+     * Renvoie la liste des produits selon leurs type, avec une pagination
+     *
+     * @param $type : Le type de produit
+     * @param $page : La pagination en commencant à 0
+     * @return Produits[]
+     */
+    public function findByTypeWithPagination($type, $page)
+    {
+        $nb = 10;
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.type', 'type')->addSelect('type')
+            ->where('type.nom = :t')->setParameter('t', $type)
+            ->setFirstResult($page * $nb)->setMaxResults($nb)
             ->getQuery()->getResult();
     }
 

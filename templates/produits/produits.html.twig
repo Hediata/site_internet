@@ -2,23 +2,21 @@
 
 {% block title %}Boutique{% endblock %}
 
-{% block stylesheets %}<link rel="stylesheet" type="text/css" href="{{ asset('css/produits.css') }}">{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/produits.css') }}">{% endblock %}
 
 {% block body %}
     <!-- Navigation -->
     <div class="boutons">
         <h2 id="vaisseaux">Vaisseaux</h2>
-        <h2 id="programmes">Programmes</h2>
     </div>
-
-    <!-- Recherche -->
-
 
     <!-- Onglets -->
     <div class="onglets">
         <div id="vaisseaux">
             {% for vaisseau in vaisseaux %}
-                <div class="container" onclick="document.location.href='{{ path('app_show_vessel', {id: vaisseau.id}) }}'">
+                <div class="container"
+                     onclick="document.location.href='{{ path('app_show_vessel', {id: vaisseau.id}) }}'">
                     <img src="{{ asset(vaisseau.image) }}" alt="image">
                     <div class="infos">
                         <h3>{{ vaisseau.nom|replace({'_': " "})|capitalize }}</h3>
@@ -29,11 +27,19 @@
                 </div>
             {% endfor %}
         </div>
-
-
-        <div id="programmes">
-            Formulaire
-        </div>
+        {% if nbVaisseaux > 10 %}
+            <div>
+                {% if page > 1 %}
+                    <a href="{{ path('app_produits', {page: page-1}) }}">&leftarrow;</a>
+                {% endif %}
+                {% for i in 1..(nbVaisseaux //10)+1 %}
+                    <a href="{{ path('app_produits', {page: i}) }}">{{ i }}</a>
+                {% endfor %}
+                {% if page < (nbVaisseaux //10)+1 %}
+                    <a href="{{ path('app_produits', {page: page+1}) }}">&rightarrow;</a>
+                {% endif %}
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
 
@@ -45,7 +51,7 @@
         for (let i = 0; i < boutons.length; i++) {
             boutons[i].addEventListener('click', changeOnglet);
         }
-        
+
         function changeOnglet(event) {
             setOnglet(event.target.id);
         }
@@ -63,8 +69,5 @@
         }
 
         setOnglet('vaisseaux');
-    </script>
-    <script type="text/javascript"> // Script pour la recherche
-
     </script>
 {% endblock %}

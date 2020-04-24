@@ -28,16 +28,17 @@ class ProduitsController extends AbstractController
     }
 
     /**
-     * @Route("/", name="app_produits")
+     * @Route("/{page}", name="app_produits", defaults={"page"="1"})
+     * @param $page
      * @param EntityManagerInterface $em
      * @return Response
      */
-    public function market(EntityManagerInterface $em)
+    public function market($page, EntityManagerInterface $em)
     {
-        $vaisseaux = $em->getRepository(Produits::class)->findByType('vaisseau');
-
         return $this->render('produits/produits.html.twig', [
-            'vaisseaux' => $vaisseaux,
+            'vaisseaux' => $em->getRepository(Produits::class)->findByTypeWithPagination('vaisseau', $page - 1),
+            'nbVaisseaux' => $em->getRepository(Produits::class)->countByType('vaisseau'),
+            'page' => $page
         ]);
     }
 
