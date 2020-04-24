@@ -43,7 +43,7 @@ class ProduitsController extends AbstractController
     }
 
     /**
-     * @Route("/vessel/{id}", name="app_show_vessel")
+     * @Route("/show/{id}", name="app_show_product")
      * @param $id
      * @param EntityManagerInterface $em
      * @param Request $request
@@ -77,7 +77,7 @@ class ProduitsController extends AbstractController
             throw $this->createNotFoundException(sprintf('No vessel found for id : %s', $id));
         }
 
-        return $this->render('produits/show_vessel.html.twig', [
+        return $this->render('produits/show_product.html.twig', [
             'vaisseau' => $vaisseau,
             'form' => $form->createView(),
         ]);
@@ -93,7 +93,7 @@ class ProduitsController extends AbstractController
     {
         return $this->render('produits/search.html.twig', [
             'keyword' => $keyword,
-            'result' => $em->getRepository(Produits::class)->findLikeInType($keyword),
+            'result' => $em->getRepository(Produits::class)->findLike($keyword),
         ]);
     }
 }

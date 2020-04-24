@@ -57,6 +57,20 @@ class CommandesRepository extends ServiceEntityRepository
         return $this->findAllTypeSortByDate('mercenaire');
     }
 
+    /**
+     * Supprime la commande
+     *
+     * @param $id
+     * @return int|mixed|string
+     */
+    public function delete($id)
+    {
+        return $this->createQueryBuilder('c')
+            ->delete()
+            ->where('c.id = :id')->setParameter('id', $id)
+            ->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Commandes[] Returns an array of Commandes objects
     //  */

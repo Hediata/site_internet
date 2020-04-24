@@ -4,8 +4,11 @@
 namespace App\Controller;
 
 use App\Entity\Candidature;
+use App\Entity\Commandes;
 use App\Entity\Grades;
+use App\Entity\Produits;
 use App\Entity\Sections;
+use App\Entity\Types;
 use App\Entity\Utilisateurs;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -58,6 +61,9 @@ class ModerationController extends AbstractController
                     'candidatures' => $candidatures,
                     'onglet' => $onglet,
                     'grades' => $grades,
+                    'commandes' => $em->getRepository(Commandes::class)->findAll(),
+                    'produits' => $em->getRepository(Produits::class)->findAll(),
+                    'types' => $em->getRepository(Types::class)->findAll(),
                 ]);
             } else {
                 return $this->redirectToRoute('app_homepage');
@@ -90,7 +96,7 @@ class ModerationController extends AbstractController
     }
 
     /**
-     * @Route("/rejecet/{id}", name="app_candidature_reject")
+     * @Route("/reject/{id}", name="app_candidature_reject")
      * @param $id
      * @param EntityManagerInterface $em
      * @return RedirectResponse
@@ -99,7 +105,7 @@ class ModerationController extends AbstractController
     {
         $user = $this->session->get('user');
         if ($user) {
-            if ($user->getLogin() === "gashmob") {
+            if ($user->getLogin() === 'gashmob') {
                 if ($em->getRepository(Candidature::class)->reject($id)) {
                     $this->addFlash('success', 'La candidature a été supprimée');
                 } else {
@@ -139,5 +145,73 @@ class ModerationController extends AbstractController
         }
 
         return $this->redirectToRoute('app_moderation', ['onglet' => 'utilisateurs']);
+    }
+
+    /**
+     * @Route("/delete/commande/{id}", name="app_delete_commande")
+     * @param $id
+     * @param EntityManagerInterface $em
+     * @return RedirectResponse
+     */
+    public function deleteCommande($id, EntityManagerInterface $em)
+    {
+        $user = $this->session->get('user');
+        if ($user) {
+            if ($user->getLogin() === 'gashmob') {
+                if ($em->getRepository(Commandes::class)->delete($id)) {
+                    $this->addFlash('success', 'La commande a été supprimée');
+                } else {
+                    $this->addFlash('fail', 'La commande n\'a pas pu être supprimée');
+                }
+            }
+        }
+        return $this->redirectToRoute('app_moderation', ['onglet' => 'commandes']);
+    }
+
+    /**
+     * @Route("/modify/produit/{id}", name="app_modify_produit")
+     * @param $id
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return RedirectResponse
+     */
+    public function modifyProduit($id, Request $request, EntityManagerInterface $em)
+    {
+        if ($request->isMethod('POST')) {
+            $nom = $request->get('nom');
+            $prix = $request->get('prix');
+            $description = $request->get('description');
+            $image = $request->get('image');
+            $type = $em->getRepository(Types::class)->find($request->get('type'));
+
+            $produit = $em->getRepository(Produits::class)->find($id);
+            $produit->setNom($nom)
+                ->setPrix($prix)
+                ->setDescription($description)
+                ->setImage($image)
+                ->setType($type);
+
+            $em->persist($produit);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('app_moderation', ['onglet' => 'produits']);
+    }
+
+    /**
+     * @Route("/delete/produit/{id}", name="app_delete_produit")
+     * @param $id
+     * @param EntityManagerInterface $em
+     * @return RedirectResponse
+     */
+    public function deleteProduit($id, EntityManagerInterface $em)
+    {
+        $user = $this->session->get('user');
+        if ($user) {
+            if ($user->getLogin() === 'gashmob') {
+                $em->getRepository(Produits::class)->delete($id);
+            }
+        }
+        return $this->redirectToRoute('app_moderation', ['onglet' => 'produits']);
     }
 }

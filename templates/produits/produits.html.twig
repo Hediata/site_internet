@@ -8,7 +8,8 @@
 {% block body %}
     <!-- Recherche -->
     <div>
-        <input type="text" class="search-input" placeholder="Recherche ..."><button type="submit" class="search-button">Chercher</button>
+        <input type="text" class="search-input" placeholder="Recherche ...">
+        <button type="submit" class="search-button">Chercher</button>
     </div>
 
     <!-- Navigation -->
@@ -21,7 +22,7 @@
         <div id="vaisseaux">
             {% for vaisseau in vaisseaux %}
                 <div class="container"
-                     onclick="document.location.href='{{ path('app_show_vessel', {id: vaisseau.id}) }}'">
+                     onclick="document.location.href='{{ path('app_show_product', {id: vaisseau.id}) }}'">
                     <img src="{{ asset(vaisseau.image) }}" alt="image">
                     <div class="infos">
                         <h3>{{ vaisseau.nom|replace({'_': " "})|capitalize }}</h3>

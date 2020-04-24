@@ -11,6 +11,8 @@
         <h2 id="utilisateurs">Utilisateurs</h2>
         <h2 id="sections">Sections</h2>
         <h2 id="candidatures">Candidatures</h2>
+        <h2 id="produits">Produits</h2>
+        <h2 id="commandes">Commandes</h2>
     </div>
 
     <!-- Onglets -->
@@ -71,7 +73,7 @@
                                     </td>
                                 {% else %}
                                     <td>Visiteur</td>
-                                    <td> </td>
+                                    <td></td>
                                 {% endif %}
                                 <td>
                                     <button type="submit" style="color: green;">V</button>
@@ -134,7 +136,7 @@
                                         </select></td>
                                 {% else %}
                                     <td>Visiteur</td>
-                                    <td> </td>
+                                    <td></td>
                                 {% endif %}
                                 <td>{{ candidature.motivation }}</td>
                                 <td class="accept" id="{{ candidature.id }}">
@@ -145,6 +147,76 @@
                                             style="color: red;">X</a></td>
                             </form>
                         </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </div>
+
+        <div id="produits">
+            {% if produits is empty %}
+                <p>Aucun produit</p>
+            {% else %}
+                <table>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prix</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th>Type</th>
+                    </tr>
+                    {% for produit in produits %}
+                        <tr>
+                            <form action="{{ path('app_modify_produit', {id: produit.id}) }}" method="post">
+                                <td><input name="nom" type="text" value="{{ produit.nom }}"></td>
+                                <td><input name="prix" type="number" value="{{ produit.prix }}"></td>
+                                <td><textarea name="description">{{ produit.description }}</textarea></td>
+                                <td><input name="image" type="text" value="{{ produit.image }}"></td>
+                                <td>
+                                    <select name="type">
+                                        {% for type in types %}
+                                            {% if type.nom == produit.type.nom %}
+                                                <option value="{{ type.id }}" selected>{{ type.nom }}</option>
+                                            {% else %}
+                                                <option value="{{ type.id }}">{{ type.nom }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td><button type="submit" style="color: green;">V</button></td>
+                                <td><a href="{{ path('app_delete_produit', {id: produit.id}) }}" style="color: red;">X</a></td>
+                            </form>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </div>
+
+        <div id="commandes">
+            {% if commandes is empty %}
+                <p>Aucune commande</p>
+            {% else %}
+                <table>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                        <th>Utilisateur</th>
+                        <th>Date</th>
+                    </tr>
+                    {% for commande in commandes %}
+                        {% if not commande.realise %}
+                            <tr>
+                                <td>
+                                    <a href="{{ path('app_show_product', {id: commande.produit.id}) }}">{{ commande.produit.nom }}</a>
+                                </td>
+                                <td>{{ commande.quantite }}</td>
+                                <td>
+                                    <a href="{{ path('app_user', {login: commande.utilisateur.login}) }}">{{ commande.utilisateur.login }}</a>
+                                </td>
+                                <td>{{ commande.date.format('l j F Y à H:i:s') }}</td>
+                                <td><a href="{{ path('app_delete_commande', {id: commande.id}) }}"
+                                       style="color: red;">X</a></td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 </table>
             {% endif %}

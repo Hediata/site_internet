@@ -67,11 +67,23 @@ class ProduitsRepository extends ServiceEntityRepository
      * @param $keyword : Le mot clé pour la recherche
      * @return Produits[]
      */
-    public function findLikeInType($keyword)
+    public function findLike($keyword)
     {
         return $this->createQueryBuilder('p')
             ->leftJoin('p.type', 'type')->addSelect('type')
             ->where('p.nom LIKE :kw')->setParameter('kw', '%' . $keyword . '%')
+            ->getQuery()->getResult();
+    }
+
+    /**
+     * @param $id
+     * @return int|mixed|string
+     */
+    public function delete($id)
+    {
+        return $this->createQueryBuilder('p')
+            ->delete()
+            ->where('p.id = :id')->setParameter('id', $id)
             ->getQuery()->getResult();
     }
 
