@@ -6,6 +6,11 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('css/produits.css') }}">{% endblock %}
 
 {% block body %}
+    <!-- Recherche -->
+    <div>
+        <input type="text" class="search-input" placeholder="Recherche ..."><button type="submit" class="search-button">Chercher</button>
+    </div>
+
     <!-- Navigation -->
     <div class="boutons">
         <h2 id="vaisseaux">Vaisseaux</h2>
@@ -44,6 +49,24 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script> // La recherche
+        let input = document.querySelector('.search-input');
+
+        document.querySelector('.search-button').addEventListener('click', search);
+        input.addEventListener('keyup', searchK);
+
+        function redirect() {
+            document.location.href = '{{ path('app_search') }}/' + input.value;
+        }
+
+        function search(event) {
+            redirect();
+        }
+
+        function searchK(event) {
+            if (event.keyCode === 13) redirect();
+        }
+    </script>
     <script type="text/javascript"> // Script pour les onglets
         let boutons = document.querySelectorAll('.boutons > h2');
         let onglets = document.querySelectorAll('.onglets > div');

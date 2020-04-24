@@ -82,4 +82,18 @@ class ProduitsController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/search/{keyword}", name="app_search", defaults={"keyword"=""})
+     * @param $keyword
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    public function search($keyword, EntityManagerInterface $em)
+    {
+        return $this->render('produits/search.html.twig', [
+            'keyword' => $keyword,
+            'result' => $em->getRepository(Produits::class)->findLikeInType($keyword),
+        ]);
+    }
 }

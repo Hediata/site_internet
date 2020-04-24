@@ -61,6 +61,20 @@ class ProduitsRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
     }
 
+    /**
+     * Cherche dans tous les produits
+     *
+     * @param $keyword : Le mot clé pour la recherche
+     * @return Produits[]
+     */
+    public function findLikeInType($keyword)
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.type', 'type')->addSelect('type')
+            ->where('p.nom LIKE :kw')->setParameter('kw', '%' . $keyword . '%')
+            ->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Produits[] Returns an array of Produits objects
     //  */
