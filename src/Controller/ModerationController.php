@@ -10,6 +10,7 @@ use App\Entity\Produits;
 use App\Entity\Sections;
 use App\Entity\Types;
 use App\Entity\Utilisateurs;
+use App\ModerationAccess;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,14 +26,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class ModerationController extends AbstractController
 {
     private $session;
-    private $whiteList;
 
     public function __construct(SessionInterface $session)
     {
         $this->session = $session;
-        $this->whiteList = [
-            'gashmob', 'cookie', 'ika', 'mitchalex27'
-        ];
     }
 
     /**
@@ -45,7 +42,7 @@ class ModerationController extends AbstractController
     {
         $user = $this->session->get('user');
         if ($user) {
-            if (in_array($user->getLogin(), $this->whiteList)) {
+            if (ModerationAccess::haveAccess($user)) {
                 $utilisateurs = $em->getRepository(Utilisateurs::class)->findAll();
                 $sections = $em->getRepository(Sections::class)->findAll();
                 $candidatures = $em->getRepository(Candidature::class)->findAllNonAccepted();
@@ -87,7 +84,7 @@ class ModerationController extends AbstractController
     {
         $user = $this->session->get('user');
         if ($user) {
-            if (in_array($user->getLogin(), $this->whiteList) && $request->isMethod('POST')) {
+            if (ModerationAccess::haveAccess($user) && $request->isMethod('POST')) {
                 if ($em->getRepository(Candidature::class)->accept($id, $request->get('grade'))) {
                     $this->addFlash('success', 'La candidature a été acceptée, l\'utilisateur a été créé');
                 } else {
@@ -109,7 +106,7 @@ class ModerationController extends AbstractController
     {
         $user = $this->session->get('user');
         if ($user) {
-            if (in_array($user->getLogin(), $this->whiteList)) {
+            if (ModerationAccess::haveAccess($user)) {
                 if ($em->getRepository(Candidature::class)->reject($id)) {
                     $this->addFlash('success', 'La candidature a été supprimée');
                 } else {
@@ -161,7 +158,7 @@ class ModerationController extends AbstractController
     {
         $user = $this->session->get('user');
         if ($user) {
-            if (in_array($user->getLogin(), $this->whiteList)) {
+            if (ModerationAccess::haveAccess($user)) {
                 if ($em->getRepository(Commandes::class)->delete($id)) {
                     $this->addFlash('success', 'La commande a été supprimée');
                 } else {
@@ -212,7 +209,7 @@ class ModerationController extends AbstractController
     {
         $user = $this->session->get('user');
         if ($user) {
-            if (in_array($user->getLogin(), $this->whiteList)) {
+            if (ModerationAccess::haveAccess($user)) {
                 $em->getRepository(Produits::class)->delete($id);
             }
         }
