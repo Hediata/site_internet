@@ -4,10 +4,13 @@
 namespace App\Controller;
 
 
+use App\Entity\Commandes;
 use App\Entity\Produits;
+use App\Entity\Types;
 use App\Entity\Utilisateurs;
 use App\Form\CommandeFormType;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,17 +31,16 @@ class ProduitsController extends AbstractController
     }
 
     /**
-     * @Route("/{page}", name="app_produits", defaults={"page"="1"})
-     * @param $page
+     * @Route("/", name="app_produits")
      * @param EntityManagerInterface $em
      * @return Response
      */
-    public function market($page, EntityManagerInterface $em)
+    public function market(EntityManagerInterface $em)
     {
         return $this->render('produits/produits.html.twig', [
-            'vaisseaux' => $em->getRepository(Produits::class)->findByTypeWithPagination('vaisseau', $page - 1),
-            'nbVaisseaux' => $em->getRepository(Produits::class)->countByType('vaisseau'),
-            'page' => $page
+            'vaisseaux' => $em->getRepository(Produits::class)->findByType('vaisseau'),
+            'programmes' => $em->getRepository(Produits::class)->findByType('programme'),
+            'mercenaires' => $em->getRepository(Produits::class)->findByType('mercenaires'),
         ]);
     }
 
@@ -48,11 +50,11 @@ class ProduitsController extends AbstractController
      * @param EntityManagerInterface $em
      * @param Request $request
      * @return RedirectResponse|Response
+     * @throws NonUniqueResultException
      */
     public function showVessel($id, EntityManagerInterface $em, Request $request)
     {
-        $repositoryP = $em->getRepository(Produits::class);
-        $vaisseau = $repositoryP->find($id);
+        $produits = $em->getRepository(Produits::class)->find($id);
 
         $form = $this->createForm(CommandeFormType::class);
 
@@ -61,7 +63,7 @@ class ProduitsController extends AbstractController
             $commande = $form->getData();
 
             if ($commande->getQuantite() > 0) {
-                $commande->setProduit($vaisseau);
+                $commande->setProduit($produits);
                 $commande->setUtilisateur($em->getRepository(Utilisateurs::class)->findOneByLogin($this->session->get('user')->getLogin()));
 
                 $em->persist($commande);
@@ -73,12 +75,12 @@ class ProduitsController extends AbstractController
             }
         }
 
-        if (!$vaisseau) {
-            throw $this->createNotFoundException(sprintf('No vessel found for id : %s', $id));
+        if (!$produits) {
+            throw $this->createNotFoundException(sprintf('No product found for id : %s', $id));
         }
 
         return $this->render('produits/show_product.html.twig', [
-            'vaisseau' => $vaisseau,
+            'vaisseau' => $produits,
             'form' => $form->createView(),
         ]);
     }
@@ -95,5 +97,43 @@ class ProduitsController extends AbstractController
             'keyword' => $keyword,
             'result' => $em->getRepository(Produits::class)->findLike($keyword),
         ]);
+    }
+
+    /**
+     * @Route("/create/commande", name="app_create_commande")
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    public function createCommande(Request $request, EntityManagerInterface $em)
+    {
+        if ($this->session->get('user')) {
+            if ($request->isMethod('POST')) {
+                $nom = $request->get('nom');
+                $description = $request->get('description');
+                $quantite = $request->get('quantite');
+
+                $produit = new Produits();
+                $produit->setType($em->getRepository(Types::class)->findOneByNom('commande'))
+                    ->setNom($nom)
+                    ->setDescription($description);
+                $em->persist($produit);
+                $em->flush();
+
+                $commande = new Commandes();
+                $commande->setProduit($produit)
+                    ->setQuantite($quantite)
+                    ->setUtilisateur($em->getRepository(Utilisateurs::class)->findOneByLogin($this->session->get('user')->getLogin()));
+                $em->persist($commande);
+                $em->flush();
+
+                $this->addFlash('success', 'Votre commande a bien été créée');
+                return $this->redirectToRoute('app_produits');
+            }
+
+            return $this->render('produits/create_commande.html.twig');
+        }
+
+        return $this->redirectToRoute('app_produits');
     }
 }
