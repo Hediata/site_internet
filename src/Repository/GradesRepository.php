@@ -19,6 +19,20 @@ class GradesRepository extends ServiceEntityRepository
         parent::__construct($registry, Grades::class);
     }
 
+    /**
+     * Renvoie tout les grades de la section
+     *
+     * @param $nom : Le nom de la section
+     * @return Grades[]
+     */
+    public function findAllBySection($nom)
+    {
+        return $this->createQueryBuilder('g')
+            ->leftJoin('g.section', 'section')->addSelect('section')
+            ->where('section.nom = :nom')->setParameter('nom', $nom)
+            ->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Grades[] Returns an array of Grades objects
     //  */

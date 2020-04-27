@@ -1,7 +1,75 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% endblock %}
+{% block title %}{{ user.login }}{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/user.css') }}">{% endblock %}
 
 {% block body %}
-    User
+    <div class="container">
+        <div class="boutons">
+            <span id="profil">Profil</span>
+            {% if app.session.get('user') and user.login == app.session.get('user').login %}
+                <span id="parametres">Paramètres</span>
+            {% endif %}
+        </div>
+
+        <div class="onglets">
+            <div id="profil">
+                <div class="utilisateur">
+                    <h2>{{ user.login }}</h2>
+                </div>
+
+                <div class="resume">
+                    <ul>
+                        {% if user.section %}
+                            <li>
+                                <a href="{{ path('app_sections', {section:user.section.nom}) }}">{{ user.section.nom }}</a>
+                            </li>
+                            <li><em>{{ user.grade.nom }}</em></li>
+                        {% else %}
+                            <li>Dans aucune section</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            {% if app.session.get('user') and user.login == app.session.get('user').login %}
+                <div id="parametres">
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    <button type="submit">Modifier</button>
+                    {{ form_end(form) }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        let boutons = document.querySelectorAll('.boutons > span');
+        let onglets = document.querySelectorAll('.onglets > div');
+
+        for (let i = 0; i < boutons.length; i++) {
+            boutons[i].addEventListener('click', changeOnglet);
+        }
+
+        function changeOnglet(event) {
+            setOnglet(event.target.id);
+        }
+
+        function setOnglet(id) {
+            if (onglets.length === boutons.length) {
+                for (let i = 0; i < onglets.length; i++) {
+                    if (onglets[i].id === id) {
+                        onglets[i].style.display = 'block';
+                    } else {
+                        onglets[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        setOnglet('profil');
+    </script>
 {% endblock %}

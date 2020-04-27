@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Utilisateurs;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +18,64 @@ class UtilisateursRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Utilisateurs::class);
+    }
+
+    /**
+     * Renvoie l'utilisateur en fonction de son login
+     *
+     * @param $login
+     * @return Utilisateurs|null
+     * @throws NonUniqueResultException
+     */
+    public function findOneByLogin($login): ?Utilisateurs
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.section', 'section')->addSelect('section')
+            ->leftJoin('u.grade', 'grade')->addSelect('grade')
+            ->where('u.login = :login')->setParameter('login', $login)
+            ->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * Renvoie l'utilisateur en fonction de son login et mot de passe
+     *
+     * @param $login
+     * @param $password
+     * @return Utilisateurs|null
+     * @throws NonUniqueResultException
+     */
+    public function findOneByLoginAndPassword($login, $password): ?Utilisateurs
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.section', 'section')->addSelect('section')
+            ->leftJoin('u.grade', 'grade')->addSelect('grade')
+            ->andWhere('u.login = :login')->setParameter('login', $login)
+            ->andWhere('u.mot_de_passe = :pwd')->setParameter('pwd', $password)
+            ->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * Compte le nombre de membres de la faction
+     *
+     * @return int
+     */
+    public function countMembers()
+    {
+        return count($this->createQueryBuilder('u')
+            ->where('u.section IS NOT NULL')
+            ->getQuery()->getResult());
+    }
+
+    /**
+     * Compte le nombre de visiteurs
+     *
+     * @return int
+     */
+    public function countVisitor()
+    {
+        return count($this->createQueryBuilder('u')
+            ->where('u.section IS NULL')
+            ->getQuery()->getResult());
     }
 
     // /**

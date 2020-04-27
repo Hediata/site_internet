@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Types;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +18,18 @@ class TypesRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Types::class);
+    }
+
+    /**
+     * @param $nom
+     * @return Types|null
+     * @throws NonUniqueResultException
+     */
+    public function findOneByNom($nom)
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.nom = :nom')->setParameter('nom', $nom)
+            ->getQuery()->getOneOrNullResult();
     }
 
     // /**

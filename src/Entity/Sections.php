@@ -18,24 +18,13 @@ class Sections
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, unique=true)
      */
     private $nom;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $nb_membre;
-
     /**
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
-
-    public function __construct()
-    {
-        $this->nb_membre = 0;
-    }
 
     public function getId(): ?int
     {
@@ -50,18 +39,6 @@ class Sections
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getNbMembre(): ?int
-    {
-        return $this->nb_membre;
-    }
-
-    public function setNbMembre(int $nb_membre): self
-    {
-        $this->nb_membre = $nb_membre;
 
         return $this;
     }

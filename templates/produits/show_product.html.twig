@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ vaisseau.nom|replace({'_': " "})|capitalize }}{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/show_vessel.css') }}">{% endblock %}
+
+{% block body %}
+    <h2>Fiche produit : {{ vaisseau.nom|replace({'_': " "})|capitalize }}</h2>
+    <h3>{{ vaisseau.prix }} crédits</h3>
+    <div class="description">
+        <img src="{{ asset(vaisseau.image) }}" alt="image">
+        <p>{{ vaisseau.description }}</p>
+    </div>
+    {% if app.session.get('user') %}
+        <div>
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button type="submit">Commander</button>
+            {{ form_end(form) }}
+        </div>
+    {% else %}
+        <div>
+            <p>Vous devez vous <a href="{{ path('app_connexion') }}">connecter</a> pour commander un produit</p>
+        </div>
+    {% endif %}
+{% endblock %}

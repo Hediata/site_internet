@@ -1,43 +1,110 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Produits{% endblock %}
+{% block title %}Boutique{% endblock %}
 
-{% block stylesheets %}<link rel="stylesheet" type="text/css" href="{{ asset('css/produits.css') }}">{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/produits.css') }}">{% endblock %}
 
 {% block body %}
+    <!-- Recherche -->
+    <div>
+        <input type="text" class="search-input" placeholder="Recherche ...">
+        <button type="submit" class="search-button">Chercher</button>
+    </div>
+
     <!-- Navigation -->
     <div class="boutons">
         <h2 id="vaisseaux">Vaisseaux</h2>
-        <h2 id="programmes">Programmes</h2>
+        <h2 id="yolol">Yolol</h2>
+        <h2 id="mercenaires">Mercenaires</h2>
     </div>
 
-    <!-- Recherche -->
-
+    {% if app.session.get('user') %}
+        <div>
+            <p>Vous ne trouvez pas ce que vous chercher ?</p>
+            <p>Créez votre <a href="{{ path('app_create_commande') }}">commande personnalisée</a></p>
+        </div>
+    {% endif %}
 
     <!-- Onglets -->
     <div class="onglets">
         <div id="vaisseaux">
-            {% for vaisseau in vaisseaux %}
-                <div class="container" onclick="document.location.href='{{ path('app_show_vessel', {id: vaisseau["id"]}) }}'">
-                    <img src="{{ asset(vaisseau['image']) }}" alt="image">
-                    <div class="infos">
-                        <h3>{{ vaisseau["nom"]|replace({'_': " "})|capitalize }}</h3>
-                        <p>Prix : {{ vaisseau['prix'] }} crédits</p>
-                        <p>{{ vaisseau['description'] }}</p>
-                        <p>{{ vaisseau['date_creation'] }}</p>
+            {% if vaisseaux is empty %}
+                <p>Aucun vaisseau en vente</p>
+            {% else %}
+                {% for vaisseau in vaisseaux %}
+                    <div class="container"
+                         onclick="document.location.href='{{ path('app_show_product', {id: vaisseau.id}) }}'">
+                        <img src="{{ asset(vaisseau.image) }}" alt="image">
+                        <div class="infos">
+                            <h3>{{ vaisseau.nom|replace({'_': " "})|capitalize }}</h3>
+                            <p>Prix : {{ vaisseau.prix }} crédits</p>
+                            <p>{{ vaisseau.description }}</p>
+                            <p>{{ vaisseau.dateCreation.format('l j F Y') }}</p>
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            {% endif %}
         </div>
 
+        <div id="yolol">
+            {% if programmes is empty %}
+                <p>Aucun programme en vente</p>
+            {% else %}
+                {% for programme in programmes %}
+                    <div class="container"
+                         onclick="document.location.href='{{ path('app_show_product', {id: programme.id}) }}'">
+                        <img src="{{ asset(programme.image) }}" alt="image">
+                        <div class="info">
+                            <h3>{{ programme.nom|replace({'_': " "})|capitalize }}</h3>
+                            <p>Prix : {{ programme.prix }} crédits</p>
+                            <p>{{ programme.description }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
 
-        <div id="programmes">
-            Formulaire
+        <div id="mercenaires">
+            {% if mercenaires is empty %}
+                <p>Aucune offre de mercenaires</p>
+            {% else %}
+                <p>Les créneaux de réservation sont choisis ingame</p>
+                {% for mercenaire in mercenaires %}
+                    <div class="container"
+                         onclick="document.location.href='{{ path('app_show_product', {id: mercenaire.id}) }}'">
+                        <img src="{{ asset(mercenaire.image) }}" alt="image">
+                        <div class="info">
+                            <h3>{{ mercenaire.nom|replace({'_': " "})|capitalize }}</h3>
+                            <p>Prix : {{ mercenaire.prix }} crédits</p>
+                            <p>{{ mercenaire.description }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 {% endblock %}
 
 {% block javascripts %}
+    <script> // La recherche
+        let input = document.querySelector('.search-input');
+
+        document.querySelector('.search-button').addEventListener('click', search);
+        input.addEventListener('keyup', searchK);
+
+        function redirect() {
+            document.location.href = '{{ path('app_search') }}/' + input.value;
+        }
+
+        function search(event) {
+            redirect();
+        }
+
+        function searchK(event) {
+            if (event.keyCode === 13) redirect();
+        }
+    </script>
     <script type="text/javascript"> // Script pour les onglets
         let boutons = document.querySelectorAll('.boutons > h2');
         let onglets = document.querySelectorAll('.onglets > div');
@@ -45,7 +112,7 @@
         for (let i = 0; i < boutons.length; i++) {
             boutons[i].addEventListener('click', changeOnglet);
         }
-        
+
         function changeOnglet(event) {
             setOnglet(event.target.id);
         }
@@ -63,8 +130,5 @@
         }
 
         setOnglet('vaisseaux');
-    </script>
-    <script type="text/javascript"> // Script pour la recherche
-
     </script>
 {% endblock %}

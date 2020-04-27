@@ -19,6 +19,74 @@ class ProduitsRepository extends ServiceEntityRepository
         parent::__construct($registry, Produits::class);
     }
 
+    /**
+     * Renvoie le nombre de produits selon leurs type
+     *
+     * @param $type : Le type de produit
+     * @return int
+     */
+    public function countByType($type)
+    {
+        return count($this->findByType($type));
+    }
+
+    /**
+     * Renvoie la liste des produits selon leurs type
+     *
+     * @param $type : Le type de produit
+     * @return Produits[]
+     */
+    public function findByType($type)
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.type', 'type')->addSelect('type')
+            ->where('type.nom = :t')->setParameter('t', $type)
+            ->getQuery()->getResult();
+    }
+
+    /**
+     * Renvoie la liste des produits selon leurs type, avec une pagination
+     *
+     * @param $type : Le type de produit
+     * @param $page : La pagination en commencant à 0
+     * @return Produits[]
+     */
+    public function findByTypeWithPagination($type, $page)
+    {
+        $nb = 10;
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.type', 'type')->addSelect('type')
+            ->where('type.nom = :t')->setParameter('t', $type)
+            ->setFirstResult($page * $nb)->setMaxResults($nb)
+            ->getQuery()->getResult();
+    }
+
+    /**
+     * Cherche dans tous les produits
+     *
+     * @param $keyword : Le mot clé pour la recherche
+     * @return Produits[]
+     */
+    public function findLike($keyword)
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.type', 'type')->addSelect('type')
+            ->where('p.nom LIKE :kw')->setParameter('kw', '%' . $keyword . '%')
+            ->getQuery()->getResult();
+    }
+
+    /**
+     * @param $id
+     * @return int|mixed|string
+     */
+    public function delete($id)
+    {
+        return $this->createQueryBuilder('p')
+            ->delete()
+            ->where('p.id = :id')->setParameter('id', $id)
+            ->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Produits[] Returns an array of Produits objects
     //  */

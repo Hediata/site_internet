@@ -1,3 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Connexion{% endblock %}
+
+{% block body %}
+    <h2>Connexion</h2>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button type="submit">Connexion</button>
+    {{ form_end(form) }}
+    <div>
+        <p>Vous n'avez pas encore de compte ? Posez votre <a href="{{ path('app_rejoindre') }}">candidature</a> tout de suite !</p>
+    </div>
+{% endblock %}

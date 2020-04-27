@@ -3,5 +3,13 @@
 {% block title %}Rejoindre{% endblock %}
 
 {% block body %}
-    {{ section }}
+    <h2>Nous rejoindre</h2>
+    <p>Posez votre candidature :</p>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button type="submit">Candidater</button>
+    {{ form_end(form) }}
+    <div>
+        <p>Vous avez déjà un compte ? <a href="{{ path('app_connexion') }}">Connectez-vous</a> !</p>
+    </div>
 {% endblock %}

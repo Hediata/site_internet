@@ -1,24 +1,23 @@
-h2
-{
+h2 {
     margin-left: 5em;
     font-size: 2em;
 }
-h3
-{
+
+h3 {
     margin-left: 7em;
     font-size: 1.7em;
 }
-.description
-{
+
+.description {
     display: flex;
     margin: 1em 2em;
 }
-img
-{
+
+img {
     width: 20em;
 }
-p
-{
+
+p {
     margin-left: 1em;
     text-indent: 2em;
 }

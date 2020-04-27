@@ -5,10 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UtilisateursRepository")
- * @ORM\Table(name="utilisateurs")
+ * @ORM\Entity(repositoryClass="App\Repository\CandidatureRepository")
  */
-class Utilisateurs
+class Candidature
 {
     /**
      * @ORM\Id()
@@ -18,7 +17,7 @@ class Utilisateurs
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50, unique=true)
+     * @ORM\Column(type="string", length=50)
      */
     private $login;
 
@@ -38,14 +37,24 @@ class Utilisateurs
     private $nom;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $accepte;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Sections")
      */
     private $section;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Grades")
+     * @ORM\Column(type="text", nullable=true)
      */
-    private $grade;
+    private $motivation;
+
+    public function __construct()
+    {
+        $this->accepte = false;
+    }
 
     public function getId(): ?int
     {
@@ -100,6 +109,18 @@ class Utilisateurs
         return $this;
     }
 
+    public function getAccepte(): ?bool
+    {
+        return $this->accepte;
+    }
+
+    public function setAccepte(bool $accepte): self
+    {
+        $this->accepte = $accepte;
+
+        return $this;
+    }
+
     public function getSection(): ?Sections
     {
         return $this->section;
@@ -112,14 +133,14 @@ class Utilisateurs
         return $this;
     }
 
-    public function getGrade(): ?Grades
+    public function getMotivation(): ?string
     {
-        return $this->grade;
+        return $this->motivation;
     }
 
-    public function setGrade(?Grades $grade): self
+    public function setMotivation(?string $motivation): self
     {
-        $this->grade = $grade;
+        $this->motivation = $motivation;
 
         return $this;
     }

@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande{% endblock %}
+
+{% block body %}
+    <form action="{{ path('app_create_commande') }}" method="post">
+        <div>
+            <label>Nom :</label>
+            <input type="text" name="nom" required>
+        </div>
+        <div>
+            <label>Description :</label>
+            <textarea name="description" cols="50" rows="10" required></textarea>
+        </div>
+        <div>
+            <label>Quantite :</label>
+            <input type="number" name="quantite" min="1" value="1">
+        </div>
+        <div>
+            <button type="submit">Créer</button>
+        </div>
+        <p>Le prix sera fixé ensuite en fonction de ce que vous avez demandé</p>
+    </form>
+{% endblock %}
