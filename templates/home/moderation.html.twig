@@ -168,7 +168,7 @@
                         <tr>
                             <form action="{{ path('app_modify_produit', {id: produit.id}) }}" method="post">
                                 <td><input name="nom" type="text" value="{{ produit.nom }}"></td>
-                                <td><input name="prix" type="number" value="{{ produit.prix }}"></td>
+                                <td><input name="prix" type="number" min="0" value="{{ produit.prix }}"></td>
                                 <td><textarea name="description">{{ produit.description }}</textarea></td>
                                 <td><input name="image" type="text" value="{{ produit.image }}"></td>
                                 <td>

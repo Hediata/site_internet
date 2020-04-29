@@ -116,6 +116,7 @@ class ProduitsController extends AbstractController
                 $produit = new Produits();
                 $produit->setType($em->getRepository(Types::class)->findOneByNom('commande'))
                     ->setNom($nom)
+                    ->setPrix(0)
                     ->setDescription($description);
                 $em->persist($produit);
                 $em->flush();

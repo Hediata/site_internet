@@ -187,7 +187,7 @@ class ModerationController extends AbstractController
 
             $produit = $em->getRepository(Produits::class)->find($id);
             $produit->setNom($nom)
-                ->setPrix($prix)
+                ->setPrix(floatval($prix))
                 ->setDescription($description)
                 ->setImage($image)
                 ->setType($type);
