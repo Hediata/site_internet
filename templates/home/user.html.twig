@@ -11,6 +11,7 @@
             <span id="profil">Profil</span>
             {% if app.session.get('user') and user.login == app.session.get('user').login %}
                 <span id="parametres">Paramètres</span>
+                <span id="commandes">Commandes</span>
             {% endif %}
         </div>
 
@@ -39,6 +40,31 @@
                     {{ form_widget(form) }}
                     <button type="submit">Modifier</button>
                     {{ form_end(form) }}
+                </div>
+
+                <div id="commandes">
+                    {% if commandes is empty %}
+                        <p>Aucune commande</p>
+                    {% else %}
+                        <table>
+                            <tr>
+                                <th>Produit</th>
+                                <th>Quantité</th>
+                                <th>Date</th>
+                                <th>Réalisée</th>
+                            </tr>
+                            {% for commande in commandes %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ path('app_show_product', {id: commande.produit.id}) }}">{{ commande.produit.nom }}</a>
+                                    </td>
+                                    <td>{{ commande.quantite }}</td>
+                                    <td>{{ commande.date.format('l j F Y à H:i:s') }}</td>
+                                    <td>{% if commande.realise %}Oui{% else %}Non{% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>

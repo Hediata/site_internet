@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Entity\Commandes;
 use App\Entity\Grades;
 use App\Entity\Sections;
 use App\Entity\Utilisateurs;
@@ -174,6 +175,7 @@ class HomeController extends AbstractController
         return $this->render('home/user.html.twig', [
             'user' => $user,
             'form' => $this->session->get('user') ? $form->createView() : null,
+            'commandes' => $this->session->get('user') ? $em->getRepository(Commandes::class)->findAllByUser($this->session->get('user')) : [],
         ]);
     }
 }
