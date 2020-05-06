@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Hediata | {% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" href="{{ asset('images/Hediata.png') }}" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/base.css') }}">
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a href="{{ path('app_homepage') }}" class="nav-link">Accueil</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('app_produits') }}" class="nav-link">Boutique</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('app_sections') }}" class="nav-link">Sections</a>
+            </li>
+            {% if app.session.get('user') %}
+                {% if app.session.get('user').login in ['gashmob', 'ika', 'cookie'] %}
+                    <li class="nav-item">
+                        <a href="{{ path('app_moderation') }}" class="nav-link">Modération</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            {% if app.session.get('user') %}
+                <li class="nav-item">
+                    <a href="{{ path('app_user') }}" class="nav-link">Profil</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_deconnexion') }}" class="nav-link">Deconnexion</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a href="{{ path('app_rejoindre') }}" class="nav-link">Rejoindre</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_connexion') }}" class="nav-link">Connexion</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+<header class="container-fluid vh-100 pt-5 pb-5">
+    <div class="h-100">
+        <h1 class="text-center text-uppercase">
+            <a href="{{ path('app_homepage') }}" class="display-1 text-decoration-none text-light font-weight-bolder">Hediata</a>
+        </h1>
+    </div>
+</header>
+
+<div class="container-fluid fixed-top mt-5">
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success col-lg-3 col-sm-2">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('fail') %}
+        <div class="alert alert-danger col-lg-3 col-sm-2">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+
+{% block aside %}{% endblock %}
+
+<main>
+    {% block body %}{% endblock %}
+</main>
+
+<footer class="container-fluid bg-dark">
+    <div class="text-center text-light p-5">
+        <p class="h4">Ce site a été créé par <a href="{{ path('app_user', {login:'Gashmob'}) }}" class="text-decoration-none text-light">Gashmob</a> avec le framework <a
+                    href="https://symfony.com" target="_blank" class="text-decoration-none text-light">Symonfy</a></p>
+    </div>
+</footer>
+
+<script type="text/javascript">
+    let alerts = document.querySelectorAll('.alert');
+
+    for (let i = 0; i < alerts.length; i++) {
+        alerts[i].addEventListener('click', clearAlert);
+    }
+
+    function clearAlert(event) {
+        event.target.style.display = 'none';
+    }
+
+    function clearAllAlert() {
+        for (let i = 0; i < alerts.length; i++) {
+            alerts[i].style.display = 'none';
+        }
+    }
+
+    setTimeout(clearAllAlert, 10000); // Attend 10 secondes avant d'effacer tout les messages flash
+</script>
+{% block javascripts %}{% endblock %}
+</body>
+</html>
