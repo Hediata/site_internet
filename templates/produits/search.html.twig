@@ -20,7 +20,7 @@
         <div id="produits">
             {% for product in result %}
                 <div class="container"
-                     onclick="document.location.href='{{ path('app_show_vessel', {id: product.id}) }}'">
+                     onclick="document.location.href='{{ path('app_show_product', {id: product.id}) }}'">
                     <img src="{{ asset(product.image) }}" alt="image">
                     <div class="infos">
                         <h3>{{ product.nom|replace({'_': " "})|capitalize }}</h3>
