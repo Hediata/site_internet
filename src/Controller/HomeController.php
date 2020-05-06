@@ -9,7 +9,6 @@ use App\Entity\Commandes;
 use App\Entity\Grades;
 use App\Entity\Sections;
 use App\Entity\Utilisateurs;
-use App\Form\CandidatureFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

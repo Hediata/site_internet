@@ -3,220 +3,272 @@
 {% block title %}Modération{% endblock %}
 
 {% block body %}
-    <!-- Navigation -->
-    <div class="boutons">
-        <h2 id="utilisateurs">Utilisateurs</h2>
-        <h2 id="sections">Sections</h2>
-        <h2 id="candidatures">Candidatures</h2>
-        <h2 id="produits">Produits</h2>
-        <h2 id="commandes">Commandes</h2>
-    </div>
+    <div class="pt-5 bg-secondary"></div><!-- Pour faire de l'espace en haut -->
 
-    <!-- Onglets -->
-    <div class="onglets">
-        <div id="utilisateurs">
-            <p><strong>{{ nbMembre }}</strong> membres et <strong>{{ nbVisiteur }}</strong> visiteurs</p>
-            {% if utilisateurs is not empty %}
-                <table>
-                    <tr>
-                        <th>Login</th>
-                        <th>Prénom</th>
-                        <th>Nom</th>
-                        <th>Section</th>
-                        <th>Grade</th>
-                    </tr>
-                    {% for utilisateur in utilisateurs %}
+    <div class="container-fluid bg-secondary pt-5 pb-5">
+        <!-- Navigation -->
+        <div class="boutons">
+            <ul class="nav nav-tabs border-0">
+                <li class="nav-item">
+                    <h2 class="nav-link {% if onglet == "utilisateurs" %}active{% endif %}" id="utilisateurs">
+                        Utilisateurs</h2>
+                </li>
+                <li class="nav-item">
+                    <h2 class="nav-link {% if onglet == "sections" %}active{% endif %}" id="sections">Sections</h2>
+                </li>
+                <li class="nav-item">
+                    <h2 class="nav-link {% if onglet == "candidatures" %}active{% endif %}" id="candidatures">
+                        Candidatures</h2>
+                </li>
+                <li class="nav-item">
+                    <h2 class="nav-link {% if onglet == "produits" %}active{% endif %}" id="produits">Produits</h2>
+                </li>
+                <li class="nav-item">
+                    <h2 class="nav-link {% if onglet == "commandes" %}active{% endif %}" id="commandes">Commandes</h2>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Onglets -->
+        <div class="onglets">
+            <div id="utilisateurs">
+                <p class="lead">{{ nbMembre }} membres et {{ nbVisiteur }} visiteurs</p>
+                {% if utilisateurs is not empty %}
+                    <table class="table table-dark table-striped table-hover">
+                        <thead class="thead-dark">
                         <tr>
-                            <form action="{{ path('app_modify_user') }}" method="post">
-                                <td><input type="text" name="login" value="{{ utilisateur.login }}" readonly></td>
-                                <td><input type="text" name="prenom" value="{{ utilisateur.prenom }}"></td>
-                                <td><input type="text" name="nom" value="{{ utilisateur.nom }}"></td>
-                                {% if utilisateur.section %}
-                                    <td>
-                                        <select name="section" class="selectSection" id="{{ utilisateur.login }}">
-                                            {% for section in sections %}
-                                                {% if section.nom == utilisateur.section.nom %}
-                                                    <option value="{{ section.nom }}"
-                                                            selected>{{ section.nom }}</option>
-                                                {% else %}
-                                                    <option value="{{ section.nom }}">{{ section.nom }}</option>
-                                                {% endif %}
-                                            {% endfor %}
-                                            <option value="aucune">Aucune</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select name="grade" class="selectGrade" id="{{ utilisateur.login }}">
-                                            {% for grade in grades %}
-                                                {% if grade.id == utilisateur.grade.id %}
-                                                    <option value="{{ grade.id }}" id="{{ grade.section.nom }}"
-                                                            selected>
-                                                        {% if grade.precedent != null %}
-                                                            ({{ grade.precedent.nom }})
-                                                        {% endif %}
-                                                        {{ grade.nom }}
-                                                    </option>
-                                                {% else %}
-                                                    <option value="{{ grade.id }}"
-                                                            id="{{ grade.section.nom }}">
-                                                        {% if grade.precedent != null %}
-                                                            ({{ grade.precedent.nom }})
-                                                        {% endif %}
-                                                        {{ grade.nom }}
-                                                    </option>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </select>
-                                    </td>
-                                {% else %}
-                                    <td>Visiteur</td>
-                                    <td></td>
-                                {% endif %}
-                                <td>
-                                    <button type="submit" style="color: green;">V</button>
-                                </td>
-                            </form>
+                            <th>Login</th>
+                            <th>Prénom</th>
+                            <th>Nom</th>
+                            <th>Section</th>
+                            <th>Grade</th>
+                            <th></th>
                         </tr>
-                    {% endfor %}
-                </table>
-            {% endif %}
-        </div>
-
-        <div id="sections">
-            <table>
-                <tr>
-                    <th>Nom</th>
-                    <th>Effectifs</th>
-                </tr>
-                {% for section in sections %}
-                    <tr>
-                        <td><a href="{{ path('app_sections', {section:section.nom}) }}">{{ section.nom }}</a></td>
-                        <td>{{ effectifs[section.nom] }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
-        </div>
-
-        <div id="candidatures">
-            {% if candidatures is empty %}
-                <p>Aucune candidature</p>
-            {% else %}
-                <table>
-                    <tr>
-                        <th>Login</th>
-                        <th>Prénom</th>
-                        <th>Nom</th>
-                        <th>Section</th>
-                        <th>Grade</th>
-                        <th>Motivation</th>
-                    </tr>
-                    {% for candidature in candidatures %}
-                        <tr>
-                            <form action="{{ path('app_candidature_accept', {id: candidature.id}) }}" method="post">
-                                <td>{{ candidature.login }}</td>
-                                <td>{{ candidature.prenom }}</td>
-                                <td>{{ candidature.nom }}</td>
-                                {% if candidature.section %}
-                                    <td>{{ candidature.section.nom }}</td>
-                                    <td><select name="grade">
-                                            {% for grade in grades %}
-                                                {% if grade.section.nom == candidature.section.nom %}
-                                                    <option value="{{ grade.id }}"
-                                                            id="{{ grade.section.nom }}">
-                                                        {% if grade.precedent != null %}
-                                                            ({{ grade.precedent.nom }})
-                                                        {% endif %}
-                                                        {{ grade.nom }}
-                                                    </option>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </select></td>
-                                {% else %}
-                                    <td>Visiteur</td>
-                                    <td></td>
-                                {% endif %}
-                                <td>{{ candidature.motivation }}</td>
-                                <td class="accept" id="{{ candidature.id }}">
-                                    <button type="submit" style="color: green;">V</button>
-                                </td>
-                                <td class="reject" id="{{ candidature.id }}"><a
-                                            href="{{ path('app_candidature_reject', {id: candidature.id}) }}"
-                                            style="color: red;">X</a></td>
-                            </form>
-                        </tr>
-                    {% endfor %}
-                </table>
-            {% endif %}
-        </div>
-
-        <div id="produits">
-            {% if produits is empty %}
-                <p>Aucun produit</p>
-            {% else %}
-                <table>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Prix</th>
-                        <th>Description</th>
-                        <th>Image</th>
-                        <th>Type</th>
-                    </tr>
-                    {% for produit in produits %}
-                        <tr>
-                            <form action="{{ path('app_modify_produit', {id: produit.id}) }}" method="post">
-                                <td><input name="nom" type="text" value="{{ produit.nom }}"></td>
-                                <td><input name="prix" type="number" min="0" value="{{ produit.prix }}"></td>
-                                <td><textarea name="description">{{ produit.description }}</textarea></td>
-                                <td><input name="image" type="text" value="{{ produit.image }}"></td>
-                                <td>
-                                    <select name="type">
-                                        {% for type in types %}
-                                            {% if type.nom == produit.type.nom %}
-                                                <option value="{{ type.id }}" selected>{{ type.nom }}</option>
-                                            {% else %}
-                                                <option value="{{ type.id }}">{{ type.nom }}</option>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                                <td><button type="submit" style="color: green;">V</button></td>
-                                <td><a href="{{ path('app_delete_produit', {id: produit.id}) }}" style="color: red;">X</a></td>
-                            </form>
-                        </tr>
-                    {% endfor %}
-                </table>
-            {% endif %}
-        </div>
-
-        <div id="commandes">
-            {% if commandes is empty %}
-                <p>Aucune commande</p>
-            {% else %}
-                <table>
-                    <tr>
-                        <th>Produit</th>
-                        <th>Quantité</th>
-                        <th>Utilisateur</th>
-                        <th>Date</th>
-                    </tr>
-                    {% for commande in commandes %}
-                        {% if not commande.realise %}
+                        </thead>
+                        <tbody>
+                        {% for utilisateur in utilisateurs %}
                             <tr>
-                                <td>
-                                    <a href="{{ path('app_show_product', {id: commande.produit.id}) }}">{{ commande.produit.nom }}</a>
-                                </td>
-                                <td>{{ commande.quantite }}</td>
-                                <td>
-                                    <a href="{{ path('app_user', {login: commande.utilisateur.login}) }}">{{ commande.utilisateur.login }}</a>
-                                </td>
-                                <td>{{ commande.date.format('l j F Y à H:i:s') }}</td>
-                                <td><a href="{{ path('app_delete_commande', {id: commande.id}) }}"
-                                       style="color: red;">X</a></td>
+                                <form action="{{ path('app_modify_user') }}" method="post">
+                                    <td><input class="form-control" type="text" name="login"
+                                               value="{{ utilisateur.login }}" readonly></td>
+                                    <td><input class="form-control" type="text" name="prenom"
+                                               value="{{ utilisateur.prenom }}"></td>
+                                    <td><input class="form-control" type="text" name="nom"
+                                               value="{{ utilisateur.nom }}"></td>
+                                    {% if utilisateur.section %}
+                                        <td>
+                                            <select class="form-control" name="section" class="selectSection"
+                                                    id="{{ utilisateur.login }}">
+                                                {% for section in sections %}
+                                                    {% if section.nom == utilisateur.section.nom %}
+                                                        <option value="{{ section.nom }}"
+                                                                selected>{{ section.nom }}</option>
+                                                    {% else %}
+                                                        <option value="{{ section.nom }}">{{ section.nom }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <option value="aucune">Aucune</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control" name="grade" class="selectGrade"
+                                                    id="{{ utilisateur.login }}">
+                                                {% for grade in grades %}
+                                                    {% if grade.id == utilisateur.grade.id %}
+                                                        <option value="{{ grade.id }}" id="{{ grade.section.nom }}"
+                                                                selected>
+                                                            {% if grade.precedent != null %}
+                                                                ({{ grade.precedent.nom }})
+                                                            {% endif %}
+                                                            {{ grade.nom }}
+                                                        </option>
+                                                    {% else %}
+                                                        <option value="{{ grade.id }}"
+                                                                id="{{ grade.section.nom }}">
+                                                            {% if grade.precedent != null %}
+                                                                ({{ grade.precedent.nom }})
+                                                            {% endif %}
+                                                            {{ grade.nom }}
+                                                        </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                    {% else %}
+                                        <td>Visiteur</td>
+                                        <td></td>
+                                    {% endif %}
+                                    <td>
+                                        <button class="btn btn-success" type="submit">v</button>
+                                    </td>
+                                </form>
                             </tr>
-                        {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+
+            <div id="sections">
+                <table class="table table-dark table-striped table-hover">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Nom</th>
+                        <th>Effectifs</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for section in sections %}
+                        <tr>
+                            <td><a class="text-info"
+                                   href="{{ path('app_sections', {section:section.nom}) }}">{{ section.nom }}</a></td>
+                            <td>{{ effectifs[section.nom] }}</td>
+                        </tr>
                     {% endfor %}
+                    </tbody>
                 </table>
-            {% endif %}
+            </div>
+
+            <div id="candidatures">
+                {% if candidatures is empty %}
+                    <p class="lead">Aucune candidature</p>
+                {% else %}
+                    <table class="table table-dark table-striped table-hover">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>Login</th>
+                            <th>Prénom</th>
+                            <th>Nom</th>
+                            <th>Section</th>
+                            <th>Grade</th>
+                            <th>Motivation</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for candidature in candidatures %}
+                            <tr>
+                                <form action="{{ path('app_candidature_accept', {id: candidature.id}) }}" method="post">
+                                    <td>{{ candidature.login }}</td>
+                                    <td>{{ candidature.prenom }}</td>
+                                    <td>{{ candidature.nom }}</td>
+                                    {% if candidature.section %}
+                                        <td>{{ candidature.section.nom }}</td>
+                                        <td><select class="form-control" name="grade">
+                                                {% for grade in grades %}
+                                                    {% if grade.section.nom == candidature.section.nom %}
+                                                        <option value="{{ grade.id }}"
+                                                                id="{{ grade.section.nom }}">
+                                                            {% if grade.precedent != null %}
+                                                                ({{ grade.precedent.nom }})
+                                                            {% endif %}
+                                                            {{ grade.nom }}
+                                                        </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select></td>
+                                    {% else %}
+                                        <td>Visiteur</td>
+                                        <td></td>
+                                    {% endif %}
+                                    <td>{{ candidature.motivation }}</td>
+                                    <td class="accept" id="{{ candidature.id }}">
+                                        <button class="btn btn-success" type="submit">v</button>
+                                    </td>
+                                    <td class="reject" id="{{ candidature.id }}"><a class="btn btn-danger"
+                                                                                    href="{{ path('app_candidature_reject', {id: candidature.id}) }}">&times;</a>
+                                    </td>
+                                </form>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+
+            <div id="produits">
+                {% if produits is empty %}
+                    <p class="lead">Aucun produit</p>
+                {% else %}
+                    <table class="table table-dark table-striped table-hover">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prix</th>
+                            <th>Description</th>
+                            <th>Image</th>
+                            <th>Type</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for produit in produits %}
+                            <tr>
+                                <form action="{{ path('app_modify_produit', {id: produit.id}) }}" method="post">
+                                    <td><input class="form-control" name="nom" type="text" value="{{ produit.nom }}">
+                                    </td>
+                                    <td><input class="form-control" name="prix" type="number" min="0"
+                                               value="{{ produit.prix }}"></td>
+                                    <td><textarea class="form-control"
+                                                  name="description">{{ produit.description }}</textarea></td>
+                                    <td><input class="form-control" name="image" type="text"
+                                               value="{{ produit.image }}"></td>
+                                    <td>
+                                        <select class="form-control" name="type">
+                                            {% for type in types %}
+                                                {% if type.nom == produit.type.nom %}
+                                                    <option value="{{ type.id }}" selected>{{ type.nom }}</option>
+                                                {% else %}
+                                                    <option value="{{ type.id }}">{{ type.nom }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success" type="submit">v</button>
+                                    </td>
+                                    <td><a class="btn btn-danger"
+                                           href="{{ path('app_delete_produit', {id: produit.id}) }}">&times;</a></td>
+                                </form>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+
+            <div id="commandes">
+                {% if commandes is empty %}
+                    <p class="lead">Aucune commande</p>
+                {% else %}
+                    <table class="table table-dark table-striped table-hover">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>Produit</th>
+                            <th>Quantité</th>
+                            <th>Utilisateur</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for commande in commandes %}
+                            {% if not commande.realise %}
+                                <tr>
+                                    <td>
+                                        <a class="text-info" href="{{ path('app_show_product', {id: commande.produit.id}) }}">{{ commande.produit.nom }}</a>
+                                    </td>
+                                    <td>{{ commande.quantite }}</td>
+                                    <td>
+                                        <a class="text-info" href="{{ path('app_user', {login: commande.utilisateur.login}) }}">{{ commande.utilisateur.login }}</a>
+                                    </td>
+                                    <td>{{ commande.date.format('l j F Y à H:i:s') }}</td>
+                                    <td><a class="btn btn-danger"
+                                           href="{{ path('app_delete_commande', {id: commande.id}) }}">&times;</a></td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -257,8 +309,8 @@
         }
     </script>
     <script type="text/javascript">
-        let boutons = document.querySelectorAll('.boutons > h2');
-        let onglets = document.querySelectorAll('.onglets > div');
+        let boutons = document.querySelectorAll('.boutons h2');
+        let onglets = document.querySelectorAll('.onglets div');
 
         for (let i = 0; i < boutons.length; i++) {
             boutons[i].addEventListener('click', changeOnglet);
@@ -273,8 +325,10 @@
                 for (let i = 0; i < onglets.length; i++) {
                     if (onglets[i].id === id) {
                         onglets[i].style.display = 'block';
+                        boutons[i].classList.add('active');
                     } else {
                         onglets[i].style.display = 'none';
+                        boutons[i].classList.remove('active');
                     }
                 }
             }
