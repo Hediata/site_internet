@@ -4,14 +4,14 @@
 namespace App\Controller;
 
 
+use App\Entity\Candidature;
 use App\Entity\Commandes;
 use App\Entity\Grades;
 use App\Entity\Sections;
 use App\Entity\Utilisateurs;
-use App\Form\CandidatureFormType;
-use App\Form\ConnexionFormType;
 use App\Form\UtilisateurFormType;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,6 +46,7 @@ class HomeController extends AbstractController
      * @param EntityManagerInterface $em
      * @param Request $request
      * @return RedirectResponse|Response
+     * @throws NonUniqueResultException
      */
     public function connexion(EntityManagerInterface $em, Request $request)
     {
@@ -53,23 +54,34 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('app_user');
         }
 
-        $form = $this->createForm(ConnexionFormType::class);
+        if ($request->isMethod('POST')) {
+            $login = $request->get('login');
+            $loginB = true;
+            if ($login === "") {
+                $loginB = false;
+                $this->addFlash('fail', 'Merci de renseigner un login');
+            }
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $user = $em->getRepository(Utilisateurs::class)->findOneByLoginAndPassword($data->getLogin(), $data->getMotDePasse());
+            $password = $request->get('password');
+            $passwordB = true;
+            if ($password === "") {
+                $passwordB = false;
+                $this->addFlash('fail', 'Merci de renseigner le mot de passe');
+            }
 
-            if ($user) {
-                $this->session->set('user', $user);
-                $this->addFlash('success', 'Vous êtes connecté(e) !');
-                return $this->redirectToRoute('app_user');
+            if ($loginB && $passwordB) {
+                $user = $em->getRepository(Utilisateurs::class)->findOneByLoginAndPassword($login, $password);
+                if ($user) {
+                    $this->session->set('user', $user);
+                    $this->addFlash('success', 'Vous êtes connecté(e) !');
+                    return $this->redirectToRoute('app_user');
+                } else {
+                    $this->addFlash('fail', 'Les identifiants sont incorrects');
+                }
             }
         }
 
-        return $this->render('home/connexion.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render('home/connexion.html.twig');
     }
 
     /**
@@ -96,26 +108,41 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('app_user');
         }
 
-        $form = $this->createForm(CandidatureFormType::class);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $candidature = $form->getData();
-
-            if ($candidature->getSection()) {
-                $section = $em->getRepository(Sections::class)->findOneByNom($candidature->getSection()->getNom());
-                $candidature->setSection($section);
+        if ($request->isMethod('POST')) {
+            $login = $request->get('login');
+            $loginB = true;
+            if ($login === "") {
+                $loginB = false;
+                $this->addFlash('fail', 'Merci de renseigner un login');
             }
 
-            $em->persist($candidature);
-            $em->flush();
+            $password = $request->get('password');
+            $passwordB = true;
+            if ($password === "") {
+                $passwordB = false;
+                $this->addFlash('fail', 'Merci de renseigner un mot de passe');
+            }
 
-            $this->addFlash('success', 'Candidature envoyée');
-            return $this->redirectToRoute('app_homepage');
+            if ($loginB && $passwordB) {
+                $candidature = new Candidature();
+                $candidature
+                    ->setLogin($login)
+                    ->setMotDePasse($password)
+                    ->setPrenom($request->get('prenom'))
+                    ->setNom($request->get('nom'))
+                    ->setSection($em->getRepository(Sections::class)->find($request->get('section')))
+                    ->setMotivation($request->get('motivation'));
+
+                $em->persist($candidature);
+                $em->flush();
+
+                $this->addFlash('success', 'Candidature envoyée');
+                return $this->redirectToRoute('app_homepage');
+            }
         }
 
         return $this->render('home/rejoindre.html.twig', [
-            'form' => $form->createView(),
+            'sections' => $em->getRepository(Sections::class)->findAll(),
         ]);
     }
 
@@ -125,6 +152,7 @@ class HomeController extends AbstractController
      * @param EntityManagerInterface $em
      * @param Request $request
      * @return RedirectResponse|Response
+     * @throws NonUniqueResultException
      */
     public function user($login, EntityManagerInterface $em, Request $request)
     {
