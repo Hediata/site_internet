@@ -4,3 +4,9 @@ header
     background-repeat: no-repeat;
     background-size: cover;
 }
+body
+{
+    background-image: url("../images/fond_etoile.jpg");
+    background-repeat: repeat;
+    background-attachment: fixed;
+}
