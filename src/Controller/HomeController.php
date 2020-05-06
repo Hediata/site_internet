@@ -9,7 +9,7 @@ use App\Entity\Commandes;
 use App\Entity\Grades;
 use App\Entity\Sections;
 use App\Entity\Utilisateurs;
-use App\Form\UtilisateurFormType;
+use App\Form\CandidatureFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -157,12 +157,12 @@ class HomeController extends AbstractController
     public function user($login, EntityManagerInterface $em, Request $request)
     {
         if ($this->session->get('user')) {
-            $form = $this->createForm(UtilisateurFormType::class,
-                $em->getRepository(Utilisateurs::class)
-                    ->findOneByLogin($this->session->get('user')->getLogin()));
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                $user = $form->getData();
+            if ($request->isMethod('POST')) {
+                $user = $em->getRepository(Utilisateurs::class)->find($this->session->get('user')->getId());
+                $user
+                    ->setPrenom($request->get('prenom'))
+                    ->setNom($request->get('nom'));
+
                 if ($user->getSection()) {
                     $user->setSection(
                         $em->getRepository(Sections::class)
@@ -182,13 +182,13 @@ class HomeController extends AbstractController
                 $em->flush();
 
                 $this->addFlash('success', 'Vos données on été modifiée');
-                return $this->redirectToRoute('app_user');
             }
         }
 
         if ($login === "") {
             if ($this->session->get('user')) {
-                $user = $this->session->get('user');
+                $user = $em->getRepository(Utilisateurs::class)->find($this->session->get('user')->getId());
+                $this->session->set('user', $user);
             } else {
                 return $this->redirectToRoute('app_homepage');
             }
@@ -202,7 +202,6 @@ class HomeController extends AbstractController
 
         return $this->render('home/user.html.twig', [
             'user' => $user,
-            'form' => $this->session->get('user') ? $form->createView() : null,
             'commandes' => $this->session->get('user') ? $em->getRepository(Commandes::class)->findAllByUser($this->session->get('user')) : [],
         ]);
     }
