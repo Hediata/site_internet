@@ -7,7 +7,7 @@
 
     <div class="container-fluid bg-secondary pt-5 pb-5">
         <!-- Navigation -->
-        <div class="boutons">
+        <div id="boutons">
             <ul class="nav nav-tabs border-0">
                 <li class="nav-item">
                     <h2 class="nav-link {% if onglet == "utilisateurs" %}active{% endif %}" id="utilisateurs">
@@ -30,7 +30,7 @@
         </div>
 
         <!-- Onglets -->
-        <div class="onglets">
+        <div id="onglets">
             <div id="utilisateurs">
                 <p class="lead">{{ nbMembre }} membres et {{ nbVisiteur }} visiteurs</p>
                 {% if utilisateurs is not empty %}
@@ -309,8 +309,8 @@
         }
     </script>
     <script type="text/javascript">
-        let boutons = document.querySelectorAll('.boutons h2');
-        let onglets = document.querySelectorAll('.onglets div');
+        let boutons = document.querySelectorAll('#boutons h2');
+        let onglets = document.querySelectorAll('#onglets > div');
 
         for (let i = 0; i < boutons.length; i++) {
             boutons[i].addEventListener('click', changeOnglet);

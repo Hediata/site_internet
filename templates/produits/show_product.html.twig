@@ -1,24 +1,33 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseWOHeader.html.twig' %}
 
 {% block title %}{{ vaisseau.nom|replace({'_': " "})|capitalize }}{% endblock %}
 
 {% block body %}
-    <h2>Fiche produit : {{ vaisseau.nom|replace({'_': " "})|capitalize }}</h2>
-    <h3>{{ vaisseau.prix }} crédits</h3>
-    <div class="description">
-        <img src="{{ asset(vaisseau.image) }}" alt="image">
-        <p>{{ vaisseau.description }}</p>
+    <div class="pt-5 bg-secondary"></div><!-- Pour faire de l'espace en haut -->
+
+    <div class="container-fluid pt-5 pb-5 bg-secondary">
+        <h2 class="display-3">{{ vaisseau.nom|replace({'_': " "})|capitalize }}</h2>
+        <h3 class="h3">{{ vaisseau.prix }} crédits</h3>
+        <div class="d-flex flex-row pb-3">
+            <img class="float-left col-5 mr-3 img-thumbnail" src="{{ asset(vaisseau.image) }}" alt="image">
+            <p class="lead">{{ vaisseau.description }}</p>
+        </div>
+        {% if app.session.get('user') %}
+            <div class="col-2">
+                <form name="commande" method="post">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Quantite</span>
+                        </div>
+                        <input class="form-control" name="quantite" type="number" min="0" value="0" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Commander</button>
+                </form>
+            </div>
+        {% else %}
+            <div>
+                <p>Vous devez vous <a href="{{ path('app_connexion') }}">connecter</a> pour commander un produit</p>
+            </div>
+        {% endif %}
     </div>
-    {% if app.session.get('user') %}
-        <div>
-            {{ form_start(form) }}
-            {{ form_widget(form) }}
-            <button type="submit">Commander</button>
-            {{ form_end(form) }}
-        </div>
-    {% else %}
-        <div>
-            <p>Vous devez vous <a href="{{ path('app_connexion') }}">connecter</a> pour commander un produit</p>
-        </div>
-    {% endif %}
 {% endblock %}

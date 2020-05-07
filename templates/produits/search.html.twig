@@ -1,61 +1,69 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseWOHeader.html.twig' %}
 
 {% block title %}Recherche &rightarrow; {{ keyword }}{% endblock %}
 
 {% block body %}
+<div class="pt-5 bg-secondary"></div><!-- Pour faire de l'espace en haut -->
+
+<div class="container-fluid pt-5 pb-5 bg-secondary">
     <!-- Recherche -->
-    <div>
-        <input type="text" class="search-input" value="{{ keyword }}">
-        <button type="submit" class="search-button">Chercher</button>
+    <div class="row col-4 pb-5">
+        <input class="form-control col-5 mr-3" type="text" id="search-input" placeholder="Recherche ...">
+        <button class="btn btn-outline-primary bg-light col-2" type="submit" id="search-button">Chercher</button>
     </div>
 
     {% if app.session.get('user') %}
-        <div>
-            <p>Vous ne trouvez pas ce que vous chercher ?</p>
-            <p>Créez votre <a href="{{ path('app_create_commande') }}">commande personnalisée</a></p>
+        <div class="jumbotron bg-dark col-4">
+            <p class="text-secondary h2">Vous ne trouvez pas ce que vous chercher ?</p>
+            <p class="text-secondary h3">Créez votre <a class="text-info" href="{{ path('app_create_commande') }}">commande
+                    personnalisée</a></p>
         </div>
     {% endif %}
 
     {% if result is not empty %}
-        <div id="produits">
-            {% for product in result %}
-                <div class="container"
+    <div id="produits">
+        <div class="container-fluid d-flex justify-content-center">
+            <div class="col-8">
+                {% for product in result %}
+                <div class="d-flex flex-row btn"
                      onclick="document.location.href='{{ path('app_show_product', {id: product.id}) }}'">
-                    <img src="{{ asset(product.image) }}" alt="image">
-                    <div class="infos">
-                        <h3>{{ product.nom|replace({'_': " "})|capitalize }}</h3>
-                        <p>Prix : {{ product.prix }} crédits</p>
-                        <p>{{ product.description }}</p>
+                    <img class="rounded float-left col-5" src="{{ asset(product.image) }}" alt="image">
+                    <div class="col-7 text-justify">
+                        <h3 class="h1">{{ product.nom|replace({'_': " "})|capitalize }}</h3>
+                        <p class="lead">Prix : {{ product.prix }} crédits</p>
+                        <p class="lead">{{ product.description }}</p>
                         <p>{{ product.dateCreation.format('l j F Y') }}</p>
                     </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            </div>
         </div>
-    {% else %}
-        <div>
-            <p>Aucun produits correspondant</p>
-        </div>
-    {% endif %}
-{% endblock %}
+        {% else %}
+            <div>
+                <p class="lead">Aucun produits correspondant</p>
+            </div>
+        {% endif %}
+    </div>
+    {% endblock %}
 
-{% block javascripts %}
-    <script> // La recherche
-        let input = document.querySelector('.search-input');
+    {% block javascripts %}
+        <script> // La recherche
+            let input = document.querySelector('#search-input');
 
-        document.querySelector('.search-button').addEventListener('click', search);
-        input.addEventListener('keyup', searchK);
+            document.querySelector('#search-button').addEventListener('click', search);
+            input.addEventListener('keyup', searchK);
 
-        function redirect() {
-            document.location.href = '{{ path('app_search') }}/' + input.value;
-        }
+            function redirect() {
+                document.location.href = '{{ path('app_search') }}/' + input.value;
+            }
 
-        function search(event) {
-            redirect();
-        }
+            function search(event) {
+                redirect();
+            }
 
-        function searchK(event) {
-            if (event.keyCode === 13) redirect();
-        }
-    </script>
-{% endblock %}
+            function searchK(event) {
+                if (event.keyCode === 13) redirect();
+            }
+        </script>
+    {% endblock %}
 
