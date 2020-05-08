@@ -7,7 +7,7 @@
 
     <div class="container-fluid bg-secondary pt-5 pb-5">
         <!-- Navigation -->
-        <div id="boutons">
+        <div id="boutons" class="mb-3">
             <ul class="nav nav-tabs border-0">
                 <li class="nav-item">
                     <h2 class="nav-link {% if onglet == "utilisateurs" %}active{% endif %}" id="utilisateurs">
@@ -33,6 +33,7 @@
         <div id="onglets">
             <div id="utilisateurs">
                 <p class="lead">{{ nbMembre }} membres et {{ nbVisiteur }} visiteurs</p>
+                <p>Les grades : <em>grade &longleftarrow; grade supérieur</em> ou <em>grade</em></p>
                 {% if utilisateurs is not empty %}
                     <table class="table table-dark table-striped table-hover">
                         <thead class="thead-dark">
@@ -57,7 +58,7 @@
                                                value="{{ utilisateur.nom }}"></td>
                                     {% if utilisateur.section %}
                                         <td>
-                                            <select class="form-control" name="section" class="selectSection"
+                                            <select class="form-control selectSection" name="section"
                                                     id="{{ utilisateur.login }}">
                                                 {% for section in sections %}
                                                     {% if section.nom == utilisateur.section.nom %}
@@ -71,24 +72,24 @@
                                             </select>
                                         </td>
                                         <td>
-                                            <select class="form-control" name="grade" class="selectGrade"
+                                            <select class="form-control selectGrade" name="grade"
                                                     id="{{ utilisateur.login }}">
                                                 {% for grade in grades %}
                                                     {% if grade.id == utilisateur.grade.id %}
                                                         <option value="{{ grade.id }}" id="{{ grade.section.nom }}"
                                                                 selected>
-                                                            {% if grade.precedent != null %}
-                                                                ({{ grade.precedent.nom }})
-                                                            {% endif %}
                                                             {{ grade.nom }}
+                                                            {% if grade.precedent != null %}
+                                                                &longleftarrow; {{ grade.precedent.nom }}
+                                                            {% endif %}
                                                         </option>
                                                     {% else %}
                                                         <option value="{{ grade.id }}"
                                                                 id="{{ grade.section.nom }}">
-                                                            {% if grade.precedent != null %}
-                                                                ({{ grade.precedent.nom }})
-                                                            {% endif %}
                                                             {{ grade.nom }}
+                                                            {% if grade.precedent != null %}
+                                                                &longleftarrow; {{ grade.precedent.nom }}
+                                                            {% endif %}
                                                         </option>
                                                     {% endif %}
                                                 {% endfor %}
@@ -132,6 +133,7 @@
             <div id="candidatures">
                 {% if candidatures is empty %}
                     <p class="lead">Aucune candidature</p>
+                    <p>Les grades : <em>grade &longleftarrow; grade supérieur</em> ou <em>grade</em></p>
                 {% else %}
                     <table class="table table-dark table-striped table-hover">
                         <thead class="thead-dark">
@@ -158,10 +160,10 @@
                                                     {% if grade.section.nom == candidature.section.nom %}
                                                         <option value="{{ grade.id }}"
                                                                 id="{{ grade.section.nom }}">
-                                                            {% if grade.precedent != null %}
-                                                                ({{ grade.precedent.nom }})
-                                                            {% endif %}
                                                             {{ grade.nom }}
+                                                            {% if grade.precedent != null %}
+                                                                &longleftarrow; {{ grade.precedent.nom }}
+                                                            {% endif %}
                                                         </option>
                                                     {% endif %}
                                                 {% endfor %}
@@ -253,11 +255,13 @@
                             {% if not commande.realise %}
                                 <tr>
                                     <td>
-                                        <a class="text-info" href="{{ path('app_show_product', {id: commande.produit.id}) }}">{{ commande.produit.nom }}</a>
+                                        <a class="text-info"
+                                           href="{{ path('app_show_product', {id: commande.produit.id}) }}">{{ commande.produit.nom }}</a>
                                     </td>
                                     <td>{{ commande.quantite }}</td>
                                     <td>
-                                        <a class="text-info" href="{{ path('app_user', {login: commande.utilisateur.login}) }}">{{ commande.utilisateur.login }}</a>
+                                        <a class="text-info"
+                                           href="{{ path('app_user', {login: commande.utilisateur.login}) }}">{{ commande.utilisateur.login }}</a>
                                     </td>
                                     <td>{{ commande.date.format('l j F Y à H:i:s') }}</td>
                                     <td><a class="btn btn-danger"
@@ -280,14 +284,14 @@
 
         for (let i = 0; i < selectSection.length; i++) {
             selectSection[i].addEventListener('click', select);
-            sortGrade(selectSection[i].id);
+            sortGrade(selectSection[i].id, false);
         }
 
         function select(event) {
-            sortGrade(event.target.id)
+            sortGrade(event.target.id, true)
         }
 
-        function sortGrade(id) {
+        function sortGrade(id, first) {
             // Récupération section sélectionnée
             let sectionsOption = document.querySelectorAll('#' + id + '.selectSection > option');
             let section = "";
@@ -301,6 +305,10 @@
             let gradesOption = document.querySelectorAll('#' + id + '.selectGrade > option');
             for (let i = 0; i < gradesOption.length; i++) {
                 if (gradesOption[i].id === section) {
+                    if (first) {
+                        first = false;
+                        gradesOption[i].selected = true;
+                    }
                     gradesOption[i].style.display = 'block';
                 } else {
                     gradesOption[i].style.display = 'none';
