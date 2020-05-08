@@ -1,24 +1,32 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseWOHeader.html.twig' %}
 
 {% block title %}Sections{% endblock %}
 
 {% block body %}
-    <h2>Les sections</h2>
-    <div class="sections">
-        {% for section in sections %}
-            <a href="{{ path('app_sections', {section:section.nom}) }}">
-                <h3>{{ section.nom }}</h3>
-                <div>
-                    <p>{{ section.description }}</p>
-                    <span><strong>{{ effectifs[section.nom] }}</strong>
+    <div class="pt-5 bg-secondary"></div><!-- Pour faire de l'espace en haut -->
+
+    <div class="container-fluid pt-5 pb-5 bg-secondary">
+        <div class="ml-5">
+            <h2 class="display-3">Les sections</h2>
+            <p class="lead">La faction est divisé en 3 sections &longrightarrow; R&D, Industry et Military, chacune avec son role :</p>
+        </div>
+        <div class="container-fluid d-flex flex-column">
+            {% for section in sections %}
+                <div class="jumbotron bg-dark btn text-justify"
+                     onclick="document.location.href='{{ path('app_sections', {section:section.nom}) }}'">
+                    <h3 class="display-4 text-secondary">{{ section.nom }}</h3>
+                    <div class="jumbotron bg-secondary">
+                        <p class="h4 text-dark">{{ section.description }}</p>
+                        <span class="lead text-dark"><strong class="text-monospace font-weight-bold">{{ effectifs[section.nom] }}</strong>
                         {% if effectifs[section.nom] > 1 %}
                             membres
                         {% else %}
                             membre
                         {% endif %}
                     </span>
+                    </div>
                 </div>
-            </a>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
