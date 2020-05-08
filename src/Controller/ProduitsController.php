@@ -8,7 +8,6 @@ use App\Entity\Commandes;
 use App\Entity\Produits;
 use App\Entity\Types;
 use App\Entity\Utilisateurs;
-use App\Form\CommandeFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -56,32 +55,30 @@ class ProduitsController extends AbstractController
     {
         $produits = $em->getRepository(Produits::class)->find($id);
 
-        $form = $this->createForm(CommandeFormType::class);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $commande = $form->getData();
-
-            if ($commande->getQuantite() > 0) {
-                $commande->setProduit($produits);
-                $commande->setUtilisateur($em->getRepository(Utilisateurs::class)->findOneByLogin($this->session->get('user')->getLogin()));
-
-                $em->persist($commande);
-                $em->flush();
-
-                $this->addFlash('success', sprintf('Vous en avez commandé %d', $commande->getQuantite()));
-
-                return $this->redirectToRoute('app_produits');
-            }
-        }
-
         if (!$produits) {
             throw $this->createNotFoundException(sprintf('No product found for id : %s', $id));
         }
 
+        if ($request->isMethod('POST')) {
+            $quantite = $request->get('quantite');
+
+            if ($quantite < 1) {
+                $this->addFlash('fail', 'Merci de saisir une quantité supérieure à 0');
+            } else {
+                $commande = new Commandes();
+                $commande
+                    ->setProduit($produits)
+                    ->setUtilisateur($em->getRepository(Utilisateurs::class)->findOneByLogin($this->session->get('user')->getLogin()))
+                    ->setQuantite($quantite);
+
+                $em->persist($commande);
+                $em->flush();
+                $this->addFlash('success', sprintf('Vous en avez commandé %d', $commande->getQuantite()));
+            }
+        }
+
         return $this->render('produits/show_product.html.twig', [
             'vaisseau' => $produits,
-            'form' => $form->createView(),
         ]);
     }
 
@@ -104,6 +101,7 @@ class ProduitsController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $em
      * @return Response
+     * @throws NonUniqueResultException
      */
     public function createCommande(Request $request, EntityManagerInterface $em)
     {
@@ -116,6 +114,7 @@ class ProduitsController extends AbstractController
                 $produit = new Produits();
                 $produit->setType($em->getRepository(Types::class)->findOneByNom('commande'))
                     ->setNom($nom)
+                    ->setPrix(0)
                     ->setDescription($description);
                 $em->persist($produit);
                 $em->flush();

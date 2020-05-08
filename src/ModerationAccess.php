@@ -19,12 +19,9 @@ abstract class ModerationAccess
      */
     public static function haveAccess($user)
     {
-        if ($user->getSection())
-        {
+        if ($user->getSection()) {
             return (in_array($user->getLogin(), self::$whiteList)) || ($user->getGrade()->getNiveau() <= self::$accessLevel);
-        }
-        else
-        {
+        } else {
             return in_array($user->getLogin(), self::$whiteList);
         }
     }

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Commandes;
+use App\Entity\Utilisateurs;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -28,7 +29,7 @@ class CommandesRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param $type : Le nom du type
+     * @param $type string : Le nom du type
      * @return Commandes[] : La liste des commandes de type $type
      */
     private function findAllTypeSortByDate($type)
@@ -68,6 +69,18 @@ class CommandesRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->delete()
             ->where('c.id = :id')->setParameter('id', $id)
+            ->getQuery()->getResult();
+    }
+
+    /**
+     * @param $user Utilisateurs
+     * @return Commandes[]
+     */
+    public function findAllByUser($user)
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.utilisateur', 'utilisateur')->addSelect('utilisateur')
+            ->where('utilisateur.login = :login')->setParameter('login', $user->getLogin())
             ->getQuery()->getResult();
     }
 
