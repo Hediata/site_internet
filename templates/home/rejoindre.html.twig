@@ -14,7 +14,8 @@
                     <div class="col-6">
                         <form name="rejoindre" method="post">
                             <input type="text" class="form-control" name="login" placeholder="Login" required>
-                            <input type="password" class="form-control mt-2" name="password" placeholder="Mot de passe" required>
+                            <input type="password" class="form-control mt-2" name="password" placeholder="Mot de passe"
+                                   required>
                             <input type="text" class="form-control mt-2" name="prenom" placeholder="Prenom">
                             <input type="text" class="form-control mt-2" name="Nom" placeholder="Nom">
                             <select name="section" class="form-control mt-2" required>
@@ -23,13 +24,15 @@
                                 {% endfor %}
                                 <option value="0" selected>Visiteur/Autre faction</option>
                             </select>
-                            <textarea class="form-control mt-2" name="motivation" placeholder="Motivation" rows="7"></textarea>
+                            <textarea class="form-control mt-2" name="motivation" placeholder="Motivation"
+                                      rows="7"></textarea>
                             <input type="submit" class="btn btn-primary mt-2" value="Candidater">
                         </form>
                     </div>
                 </div>
                 <div>
-                    <p>Vous avez déjà un compte ? <a href="{{ path('app_connexion') }}" class="text-dark">Connectez-vous</a> !</p>
+                    <p>Vous avez déjà un compte ? <a href="{{ path('app_connexion') }}"
+                                                     class="text-dark">Connectez-vous</a> !</p>
                 </div>
             </div>
         </div>

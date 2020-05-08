@@ -16,7 +16,8 @@
         <div class="row-cols-6">
             {% for section in sections %}
                 <div class="col-12 {% if loop.index is even %}text-right{% else %}text-left{% endif %}">
-                    <h3><a href="{{ path('app_sections', {section:section.nom}) }}" class="text-dark">{{ section.nom }}</a></h3>
+                    <h3><a href="{{ path('app_sections', {section:section.nom}) }}"
+                           class="text-dark">{{ section.nom }}</a></h3>
                     <p class="text-light">{{ section.description }}</p>
                 </div>
             {% endfor %}

@@ -13,6 +13,8 @@ use App\Entity\Utilisateurs;
 use App\ModerationAccess;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -78,7 +80,11 @@ class ModerationController extends AbstractController
      * @Route("/accept/{id}", name="app_candidature_accept")
      * @param $id
      * @param EntityManagerInterface $em
+     * @param Request $request
      * @return RedirectResponse
+     * @throws NonUniqueResultException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function acceptCandidature($id, EntityManagerInterface $em, Request $request)
     {
